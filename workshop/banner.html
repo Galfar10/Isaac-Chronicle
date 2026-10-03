@@ -5,56 +5,75 @@
 <style>
   @font-face { font-family: Fell; src: url('../node_modules/@fontsource/im-fell-english-sc/files/im-fell-english-sc-latin-400-normal.woff2'); }
   @font-face { font-family: Alegreya; src: url('../node_modules/@fontsource/alegreya/files/alegreya-latin-400-italic.woff2'); font-style: italic; }
-  @font-face { font-family: AlegreyaR; src: url('../node_modules/@fontsource/alegreya/files/alegreya-latin-400-normal.woff2'); }
   html, body { margin: 0; width: 1280px; height: 640px; overflow: hidden; }
   body {
-    background: radial-gradient(ellipse at 35% 45%, #3a281a 0%, #16110d 60%, #080605 100%);
-    display: flex; align-items: center; justify-content: center; gap: 56px; font-family: Fell, serif;
+    position: relative; font-family: Fell, serif;
+    background:
+      radial-gradient(ellipse 520px 420px at 18% 30%, rgba(255,150,60,.22), transparent 70%),
+      radial-gradient(ellipse 700px 500px at 82% 55%, rgba(170,40,30,.20), transparent 70%),
+      radial-gradient(ellipse at 50% 50%, #2a1d14 0%, #120d0a 65%, #050403 100%);
   }
-  .grain { position: absolute; inset: 0; opacity: .5;
+  /* stone wall bricks */
+  .bricks { position: absolute; inset: 0; opacity: .35;
+    background:
+      repeating-linear-gradient(0deg, rgba(0,0,0,.55) 0 3px, transparent 3px 64px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,.45) 0 3px, transparent 3px 128px);
+    -webkit-mask: radial-gradient(ellipse at 50% 50%, #000 30%, transparent 85%); }
+  .grain { position: absolute; inset: 0; opacity: .55;
     background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
-  .text { position: relative; color: #e9dcbc; max-width: 640px; }
-  h1 { font-weight: 400; font-size: 104px; line-height: .92; margin: 0; text-shadow: 0 4px 0 #000, 0 0 30px rgba(184,149,74,.3); }
-  h2 { font-weight: 400; font-size: 40px; margin: 18px 0 0; color: #c9a65a; letter-spacing: .08em; }
-  p { font-family: Alegreya, serif; font-style: italic; font-size: 27px; margin: 22px 0 0; color: #cdbf9f; line-height: 1.3; }
-  p + p { margin-top: 4px; color: #a8987c; }
-  .tags { display: flex; gap: 12px; margin-top: 26px; flex-wrap: wrap; }
-  .tags span { font-size: 22px; letter-spacing: .08em; color: #efe4c8; background: #7d1717; padding: 6px 16px; border-radius: 5px; box-shadow: 0 6px 14px rgba(0,0,0,.6); }
-  .tags span.lang { background: #4a3222; border: 1px solid #b8954a; }
-  .panel {
-    position: relative; width: 380px; padding: 26px 26px 22px; transform: rotate(2.5deg);
-    background: #231a14; border: 1px solid rgba(184,149,74,.35); border-radius: 8px 12px 7px 11px;
-    box-shadow: 0 26px 60px #000, inset 0 0 30px rgba(0,0,0,.6);
-  }
-  .panel::before { content: ''; position: absolute; inset: 7px; border: 1px dashed rgba(184,149,74,.2); border-radius: inherit; }
-  .panel h3 { margin: 0 0 14px; font-weight: 400; font-size: 30px; color: #d9c6a0; border-bottom: 1px solid rgba(184,149,74,.3); padding-bottom: 8px; }
-  .row { position: relative; display: flex; justify-content: space-between; align-items: center; padding: 9px 14px; margin-bottom: 8px; border-radius: 4px 8px 6px 5px;
-    background: linear-gradient(90deg, rgba(217,198,160,.09), rgba(217,198,160,.02)); border: 1px solid rgba(217,198,160,.08); }
-  .row b { font-weight: 400; font-size: 24px; color: #d9c6a0; }
-  .row span { font-family: AlegreyaR, serif; font-size: 30px; color: #efe4c8; font-variant-numeric: lining-nums tabular-nums; }
-  .up { background: linear-gradient(90deg, rgba(126,154,76,.25), rgba(217,198,160,.02)); border-color: rgba(126,154,76,.45); }
-  .delta { position: absolute; right: 12px; top: -13px; font-family: AlegreyaR, serif; font-weight: 700; font-size: 19px; color: #a8d06a; background: #0d0b09; padding: 0 7px; border-radius: 6px; }
-  .live { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 20px; color: #b9d48a; letter-spacing: .1em; }
-  .dot { width: 14px; height: 14px; border-radius: 50%; background: #7e9a4c; box-shadow: 0 0 12px #7e9a4c; }
+  .vignette { position: absolute; inset: 0; box-shadow: inset 0 0 160px 60px rgba(0,0,0,.9); pointer-events: none; z-index: 5; }
+  /* embers */
+  .ember { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #ffb347; box-shadow: 0 0 10px 3px rgba(255,140,40,.8); opacity: .8; }
+
+  .text { position: absolute; left: 64px; top: 58px; width: 500px; color: #e9dcbc; z-index: 4; }
+  .ribbon { display: inline-block; background: #7d1717; color: #efe4c8; font-size: 20px; letter-spacing: .16em; padding: 6px 18px; border-radius: 4px; box-shadow: 0 6px 16px rgba(0,0,0,.7); transform: rotate(-2deg); }
+  h1 { font-weight: 400; font-size: 100px; line-height: .9; margin: 20px 0 0;
+       background: linear-gradient(180deg, #fff3cf 0%, #e8c67a 55%, #a87b2f 100%); -webkit-background-clip: text; color: transparent;
+       filter: drop-shadow(0 5px 0 #000) drop-shadow(0 0 26px rgba(232,180,90,.45)); }
+  h2 { font-weight: 400; font-size: 31px; margin: 14px 0 0; color: #c9a65a; letter-spacing: .12em; }
+  p { font-family: Alegreya, serif; font-style: italic; font-size: 23px; margin: 16px 0 0; color: #d6c8a8; line-height: 1.28; }
+  p.en { margin-top: 2px; color: #a8987c; }
+  .tags { display: flex; gap: 8px; margin-top: 22px; flex-wrap: nowrap; }
+  .tags span { font-size: 16px; letter-spacing: .08em; white-space: nowrap; color: #efe4c8; padding: 6px 13px; border-radius: 4px; background: rgba(35,26,20,.92); border: 1px solid rgba(184,149,74,.55); box-shadow: 0 6px 14px rgba(0,0,0,.6); }
+  .tags span.hot { background: #7d1717; border-color: #a82424; }
+
+  .stage { position: absolute; right: -70px; top: 30px; width: 800px; height: 580px; perspective: 1400px; z-index: 3; }
+  .screen { position: absolute; border-radius: 10px; overflow: hidden; border: 3px solid #3a2a1e;
+    box-shadow: 0 0 0 1px rgba(184,149,74,.45), 0 40px 80px rgba(0,0,0,.85), 0 0 60px rgba(255,140,60,.12); }
+  .screen img { display: block; width: 100%; }
+  .back { width: 640px; left: 200px; top: 0; transform: rotateY(-22deg) rotateX(4deg) rotateZ(1deg); filter: brightness(.85); }
+  .front { width: 700px; left: 10px; top: 140px; transform: rotateY(-15deg) rotateX(3deg) rotateZ(-1.5deg); filter: brightness(1.12); }
+  .label { position: absolute; z-index: 6; font-size: 18px; letter-spacing: .14em; color: #efe4c8; padding: 4px 12px; border-radius: 4px; box-shadow: 0 6px 14px rgba(0,0,0,.7); }
+  .label.es { right: 60px; top: 16px; background: #4a3222; border: 1px solid #b8954a; transform: rotate(3deg); }
+  .label.en { left: 590px; top: 150px; background: #7d1717; transform: rotate(-4deg); }
+  .glow { position: absolute; right: 90px; bottom: 30px; width: 520px; height: 120px; background: radial-gradient(ellipse, rgba(255,150,60,.25), transparent 70%); z-index: 2; filter: blur(10px); }
 </style>
 </head>
 <body>
+  <div class="bricks"></div>
   <div class="grain"></div>
+  <span class="ember" style="left:150px;top:520px"></span>
+  <span class="ember" style="left:420px;top:585px;opacity:.6"></span>
+  <span class="ember" style="left:610px;top:60px;opacity:.5;width:4px;height:4px"></span>
+  <span class="ember" style="left:96px;top:60px;opacity:.55;width:3px;height:3px"></span>
+  <span class="ember" style="left:560px;top:470px;opacity:.7;width:4px;height:4px"></span>
+
   <div class="text">
-    <h1>Isaac Chronicle</h1>
+    <span class="ribbon">STEAM WORKSHOP MOD + APP</span>
+    <h1>Isaac<br>Chronicle</h1>
     <h2>REAL-TIME COMPANION</h2>
-    <p>Tu partida de The Binding of Isaac en tiempo real, en tu segundo monitor o en el móvil.</p>
-    <p>Your Binding of Isaac run in real time, on your second monitor or phone.</p>
-    <div class="tags"><span>STATS</span><span>INVENTORY</span><span>SYNERGIES</span><span>MAP</span><span class="lang">ES · EN</span></div>
+    <p>Tu partida de Isaac en tiempo real, en tu segundo monitor o en el móvil.</p>
+    <p class="en">Your Isaac run in real time, on your second monitor or phone.</p>
+    <div class="tags"><span>STATS</span><span>INVENTORY</span><span>SYNERGIES</span><span>MAP</span><span class="hot">ES · EN</span></div>
   </div>
-  <div class="panel">
-    <h3>Stats</h3>
-    <div class="row up"><b>Damage</b><span>5.19</span><i class="delta">+1.69</i></div>
-    <div class="row"><b>Tears</b><span>2.73</span></div>
-    <div class="row up"><b>Range</b><span>7.25</span><i class="delta">+0.75</i></div>
-    <div class="row"><b>Shot speed</b><span>1.00</span></div>
-    <div class="row"><b>Speed</b><span>1.30</span></div>
-    <div class="live"><span class="dot"></span>ISAAC CONNECTED</div>
+
+  <div class="glow"></div>
+  <div class="stage">
+    <div class="screen back"><img src="../docs/screenshots/03-desconocidos.png"></div>
+    <div class="screen front"><img src="../docs/screenshots/07-unknown-en.png"></div>
   </div>
+  <span class="label es">ESPAÑOL</span>
+  <span class="label en">ENGLISH</span>
+  <div class="vignette"></div>
 </body>
 </html>
