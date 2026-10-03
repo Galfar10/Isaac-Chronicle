@@ -4,7 +4,7 @@ No necesitas Python, Node.js, Docker ni `--luadebug`.
 
 ## 1. El mod (Steam Workshop)
 
-1. Abre la página del mod **Isaac Real-Time Companion** en Steam Workshop y pulsa **Suscribirse**.
+1. Abre la página del mod [**Isaac Chronicle**](https://steamcommunity.com/sharedfiles/filedetails/?id=3812867579) en Steam Workshop y pulsa **Suscribirse**.
 2. Inicia The Binding of Isaac. En el menú **Mods** comprueba que está activado (lo está por defecto).
 
 El mod es invisible: no muestra nada dentro del juego.

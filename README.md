@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://galfar10.github.io/Isaac-Chronicle/"><b>🌐 Web</b></a> ·
   <a href="https://github.com/Galfar10/Isaac-Chronicle/releases/latest"><b>⬇️ Descargar Companion</b></a> ·
-  <a href="WORKSHOP.md"><b>🎮 Mod de Steam Workshop</b></a> ·
+  <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3812867579"><b>🎮 Mod en Steam Workshop</b></a> ·
   <a href="INSTALL.md">Instalación</a> ·
   <a href="ARCHITECTURE.md">Arquitectura</a>
 </p>
@@ -48,7 +48,7 @@ tu partida y una web los muestra al momento — estadísticas reales, objetos al
 
 ## Cómo empezar (jugadores)
 
-1. Suscríbete al mod **Isaac Chronicle** en Steam Workshop.
+1. Suscríbete al mod [**Isaac Chronicle** en Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3812867579).
 2. Descarga [`IsaacCompanion-win-x64.zip`](https://github.com/Galfar10/Isaac-Chronicle/releases/latest), descomprímelo y
    ejecuta `IsaacCompanion.exe`. Déjalo abierto mientras juegas.
 3. Abre <http://127.0.0.1:47823> (se abre solo) o <https://galfar10.github.io/Isaac-Chronicle/>.

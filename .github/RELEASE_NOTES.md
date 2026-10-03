@@ -1,6 +1,6 @@
 ## Isaac Chronicle — Companion para Windows
 
-1. Suscríbete al mod **Isaac Chronicle** en Steam Workshop.
+1. Suscríbete al mod [**Isaac Chronicle** en Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3812867579).
 2. Descarga `IsaacCompanion-win-x64.zip`, descomprímelo y ejecuta `IsaacCompanion.exe` (déjalo abierto mientras juegas).
 3. Se abre <http://127.0.0.1:47823>. También puedes usar <https://galfar10.github.io/Isaac-Chronicle/>.
 

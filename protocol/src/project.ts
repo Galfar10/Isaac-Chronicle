@@ -11,7 +11,7 @@ export const PROJECT = {
   pagesOrigin: 'https://galfar10.github.io',
   repoUrl: 'https://github.com/Galfar10/Isaac-Chronicle',
   releasesUrl: 'https://github.com/Galfar10/Isaac-Chronicle/releases/latest',
-  /** Filled in after the first Workshop upload (ModUploader writes the id into metadata.xml). */
-  workshopUrl: null as string | null,
+  /** Steam Workshop item (id written by ModUploader into isaac-mod/metadata.xml). */
+  workshopUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3812867579' as string | null,
   companionPort: 47823,
 } as const;
