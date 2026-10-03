@@ -2,27 +2,19 @@ import { useEffect, useMemo, useState } from 'react';
 import type { ItemKind, ItemRecord, SynergyRecord, UnknownReason } from '@irtc/protocol';
 import { fetchSynergiesFor } from '../lib/api';
 import { useClient } from '../lib/gameStore';
-import { ITEM_TYPE_LABEL, KIND_LABEL, itemName, itemQuote, refName, useLang } from '../lib/i18n';
+import { itemName, itemQuote, refName, useLang } from '../lib/i18n';
+import { useT, type T } from '../lib/strings';
 import { ItemImage } from './ItemImage';
 import { StarIcon } from './Icons';
 
-const STAT_CACHE_LABEL: Record<string, string> = {
-  damage: 'Daño',
-  firedelay: 'Lágrimas',
-  range: 'Alcance',
-  shotspeed: 'Vel. disparo',
-  speed: 'Velocidad',
-  luck: 'Suerte',
-  flying: 'Vuelo',
-  familiars: 'Familiares',
-  tearflag: 'Efecto de lágrima',
-  all: 'Varias stats',
-};
+const STAT_CACHES = ['damage', 'firedelay', 'range', 'shotspeed', 'speed', 'luck', 'flying', 'familiars', 'tearflag', 'all'] as const;
+const ITEM_TYPES = ['passive', 'active', 'familiar', 'trinket', 'tarot', 'tarot_reverse', 'suit', 'rune', 'special', 'object'] as const;
 
 export function Quality({ q }: { q: number | null | undefined }) {
+  const t = useT();
   if (q === null || q === undefined) return null;
   return (
-    <span className="quality" title={`Calidad ${q} de 4`} aria-label={`Calidad ${q} de 4`}>
+    <span className="quality" title={t('card.quality', { q })} aria-label={t('card.quality', { q })}>
       {[1, 2, 3, 4].map((i) => (
         <StarIcon key={i} size={18} filled={i <= q} />
       ))}
@@ -47,7 +39,7 @@ export function useOwnedSynergies(item: ItemRecord | null) {
   const owned = useMemo(() => {
     const inv = new Set<string>([
       ...state.inventory.collectibles.map((c) => `collectible:${c.id}`),
-      ...state.inventory.trinkets.map((t) => `trinket:${t & 0x7fff}`),
+      ...state.inventory.trinkets.map((x) => `trinket:${x & 0x7fff}`),
     ]);
     if (!all || !item) return [];
     return all.filter((s) => {
@@ -58,19 +50,26 @@ export function useOwnedSynergies(item: ItemRecord | null) {
   return { all, owned };
 }
 
-export const UNKNOWN_NAME: Record<ItemKind, string> = {
-  collectible: 'Objeto desconocido',
-  trinket: 'Baratija desconocida',
-  card: 'Carta desconocida',
-  pill: 'Pastilla desconocida',
-};
+export function unknownName(kind: ItemKind, t: T): string {
+  return t(`unknown.${kind}`);
+}
 
-function unknownText(kind: ItemKind, reason: UnknownReason): string {
-  if (reason === 'blind') return 'El juego oculta este objeto (Curse of the Blind o pedestal con “?”). No se revela para respetar la partida.';
-  if (reason === 'not_picked')
-    return kind === 'pill' ? 'No sabrás qué hace hasta que la tomes.' : 'Recógela para saber qué es.';
-  if (kind === 'card' || kind === 'pill') return 'Está en el suelo: recógela para saber qué es.';
-  return 'Acércate para identificarlo.';
+function unknownText(kind: ItemKind, reason: UnknownReason, t: T): string {
+  if (reason === 'blind') return t('unknown.blindText');
+  if (reason === 'not_picked') return kind === 'pill' ? t('unknown.pillText') : t('unknown.cardText');
+  if (kind === 'card' || kind === 'pill') return t('unknown.floorText');
+  return t('unknown.farText');
+}
+
+export function kindLabel(kind: ItemKind, t: T): string {
+  return t(`kind.${kind}`);
+}
+
+export function typeLabel(type: string | null | undefined, kind: ItemKind, t: T): string {
+  if (type && (ITEM_TYPES as readonly string[]).includes(type)) return t(`type.${type as (typeof ITEM_TYPES)[number]}`);
+  // Game pill classes look like "pill 2+": show just "Pill" / "Pastilla".
+  if (!type || kind === 'pill') return kindLabel(kind, t);
+  return type;
 }
 
 interface CardProps {
@@ -88,17 +87,18 @@ interface CardProps {
 
 export function ItemCardBody({ item, kind, id, unknown, loading, fallbackName, compact, extra }: CardProps) {
   const lang = useLang();
+  const t = useT();
   const hidden = id === null;
   const reason: UnknownReason = unknown ?? 'far';
   const name = hidden
     ? reason === 'blind'
-      ? 'Objeto oculto'
-      : UNKNOWN_NAME[kind]
-    : itemName(item, lang, fallbackName ?? (loading ? '…' : `${KIND_LABEL[kind]?.es ?? 'Objeto'} #${id}`));
+      ? t('unknown.blind')
+      : unknownName(kind, t)
+    : itemName(item, lang, fallbackName ?? (loading ? '…' : `${kindLabel(kind, t)} #${id}`));
   const quote = itemQuote(item, lang);
   const { all, owned } = useOwnedSynergies(item);
   const effects = item?.effects ?? [];
-  const caches = (item?.statCaches ?? []).filter((c) => STAT_CACHE_LABEL[c]);
+  const caches = (item?.statCaches ?? []).filter((c): c is (typeof STAT_CACHES)[number] => (STAT_CACHES as readonly string[]).includes(c));
   return (
     <div className="card__body">
       <div className="card__art">
@@ -108,21 +108,17 @@ export function ItemCardBody({ item, kind, id, unknown, loading, fallbackName, c
       <div className="card__meta">
         <Quality q={item?.quality} />
         <span className="card__type">
-          {item?.type ? (ITEM_TYPE_LABEL[item.type] ?? item.type) : KIND_LABEL[kind]?.es}
+          {item?.type ? typeLabel(item.type, kind, t) : kindLabel(kind, t)}
           {id !== null ? <span className="muted"> · #{id}</span> : null}
         </span>
       </div>
-      {hidden ? <p className="card__desc">{unknownText(kind, reason)}</p> : null}
-      {!hidden && !loading && !item ? (
-        <p className="card__desc">
-          Objeto no encontrado en la base de datos{fallbackName ? ' (probablemente de otro mod)' : ''}. Se puede añadir sin actualizar el mod.
-        </p>
-      ) : null}
+      {hidden ? <p className="card__desc">{unknownText(kind, reason, t)}</p> : null}
+      {!hidden && !loading && !item ? <p className="card__desc">{t('card.notInDb', { mod: fallbackName ? t('card.notInDbMod') : '' })}</p> : null}
       {quote ? <p className="card__quote">“{quote}”</p> : null}
       {item?.description ? <p className="card__desc">{item.description}</p> : null}
       {effects.length ? (
         <div className="card__section">
-          <h4>Efectos</h4>
+          <h4>{t('card.effects')}</h4>
           <ul className="card__effects">
             {(compact ? effects.slice(0, 3) : effects).map((e, i) => (
               <li key={i}>{e}</li>
@@ -134,12 +130,12 @@ export function ItemCardBody({ item, kind, id, unknown, loading, fallbackName, c
         <div className="card__chips">
           {caches.map((c) => (
             <span key={c} className="chip">
-              {STAT_CACHE_LABEL[c]}
+              {t(`cache.${c}`)}
             </span>
           ))}
-          {item?.transformations.map((t) => (
-            <span key={t.id} className="chip chip--gold" title="Cuenta para esta transformación">
-              {t.name}
+          {item?.transformations.map((x) => (
+            <span key={x.id} className="chip chip--gold" title={t('card.transformation')}>
+              {x.name}
             </span>
           ))}
         </div>
@@ -147,7 +143,7 @@ export function ItemCardBody({ item, kind, id, unknown, loading, fallbackName, c
       {item && (item.kind === 'collectible' || item.kind === 'trinket') ? (
         <div className="card__section card__syn">
           <h4>
-            Sinergias conocidas: <span className="mono">{item.synergyCount}</span>
+            {t('card.synergies')}: <span className="mono">{item.synergyCount}</span>
           </h4>
           {owned.length ? (
             <ul className="syn-list">
@@ -155,24 +151,24 @@ export function ItemCardBody({ item, kind, id, unknown, loading, fallbackName, c
                 const other = s.a.kind === item.kind && s.a.id === item.id ? s.b : s.a;
                 return (
                   <li key={s.id}>
-                    <strong>Con tu {refName(other, lang)}:</strong> {s.description}
+                    <strong>{t('card.withYour', { name: refName(other, lang) })}</strong> {s.description}
                   </li>
                 );
               })}
             </ul>
           ) : all && item.synergyCount ? (
-            <p className="muted small">Ninguna con tu inventario actual.</p>
+            <p className="muted small">{t('card.noOwnedSyn')}</p>
           ) : null}
         </div>
       ) : null}
       {extra}
       {item?.sources.some((s) => s.name === 'wiki') && !compact ? (
         <p className="card__source">
-          Texto:{' '}
+          {t('card.text')}:{' '}
           <a href={item.sources.find((s) => s.name === 'wiki')?.url ?? '#'} target="_blank" rel="noreferrer">
             Binding of Isaac Wiki
           </a>{' '}
-          (CC BY-SA 4.0)
+          {t('card.textLang')}
         </p>
       ) : null}
     </div>

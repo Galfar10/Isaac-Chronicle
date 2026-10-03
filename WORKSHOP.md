@@ -11,7 +11,8 @@ Steam tiene que estar abierto con la cuenta que publicará el mod.
 | Descripción corta (la que sube ModUploader) | `<description>` de `isaac-mod/metadata.xml` |
 | Descripción completa (BBCode, para pegar en la página) | [`workshop/description.bbcode.txt`](workshop/description.bbcode.txt) |
 | Imagen principal (portada) | [`workshop/preview.png`](workshop/preview.png) — 1024×1024, cuadrada |
-| Galería (capturas, se añaden en la web de Steam) | [`docs/screenshots/01-objeto-cercano.png`](docs/screenshots/01-objeto-cercano.png), [`02-sinergias.png`](docs/screenshots/02-sinergias.png), [`03-desconocidos.png`](docs/screenshots/03-desconocidos.png), [`04-descubrimiento.png`](docs/screenshots/04-descubrimiento.png), [`05-movil.png`](docs/screenshots/05-movil.png) |
+| Galería (capturas, se añaden en la web de Steam) | Castellano: `docs/screenshots/01-objeto-cercano.png`, `02-sinergias.png`, `03-desconocidos.png`, `04-descubrimiento.png`, `05-movil.png` · English: `06-synergies-en.png`, `07-unknown-en.png`, `08-mobile-en.png`, `09-discovery-en.png` |
+| Idiomas | La web cambia entre castellano e inglés con el botón ES/EN (la descripción BBCode lo explica en ambos idiomas) |
 | Tags | `Lua`, `Tweaks` |
 | Visibilidad | `Public` (cámbiala a `Private` en `metadata.xml` si quieres probar antes) |
 | Enlace requerido | App Companion: <https://github.com/Galfar10/Isaac-Chronicle/releases/latest> |

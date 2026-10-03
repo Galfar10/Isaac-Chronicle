@@ -3,6 +3,7 @@ import { TRINKET_GOLDEN_FLAG, type ItemKind, type SynergyRecord } from '@irtc/pr
 import { fetchSynergiesAmong } from '../lib/api';
 import { useClient, useGameEvents, useItem } from '../lib/gameStore';
 import { itemName, itemQuote, refName, useLang } from '../lib/i18n';
+import { useT } from '../lib/strings';
 import { ItemImage } from './ItemImage';
 import { BagIcon, SparkIcon } from './Icons';
 
@@ -41,10 +42,11 @@ function UnknownTile({ kind, label, hint }: { kind: ItemKind; label: string; hin
   );
 }
 
-const SLOT_NAMES: Record<number, string> = { 0: 'Activo', 1: 'Activo 2', 2: 'Bolsillo', 3: 'Bolsillo 2' };
+const SLOT_KEYS = { 0: 'inv.active', 1: 'inv.active2', 2: 'inv.pocket', 3: 'inv.pocket2' } as const;
 
 export function InventoryPanel({ onOpen }: { onOpen: Open }) {
   const { state } = useClient();
+  const t = useT();
   const inv = state.inventory;
   const [fresh, setFresh] = useState<Set<number>>(new Set());
   useGameEvents((events) => {
@@ -58,36 +60,30 @@ export function InventoryPanel({ onOpen }: { onOpen: Open }) {
   const activeIds = new Map(inv.actives.map((a) => [a.id, a.slot]));
   const passives = inv.collectibles.filter((c) => !activeIds.has(c.id));
   return (
-    <section className="panel panel--inventory" aria-label="Inventario">
+    <section className="panel panel--inventory" aria-label={t('inv.title')}>
       <h2 className="panel__title">
-        <BagIcon size={22} /> Inventario <span className="muted">({inv.collectibles.reduce((n, c) => n + c.count, 0)})</span>
+        <BagIcon size={22} /> {t('inv.title')} <span className="muted">({inv.collectibles.reduce((n, c) => n + c.count, 0)})</span>
       </h2>
       {inv.actives.length || inv.trinkets.length || inv.cards.length || inv.pills.length ? (
         <ul className="tiles tiles--special">
           {inv.actives.map((a) => (
-            <Tile key={`a${a.slot}`} kind="collectible" id={a.id} badge={SLOT_NAMES[a.slot] ?? 'Activo'} onOpen={onOpen} />
+            <Tile key={`a${a.slot}`} kind="collectible" id={a.id} badge={t(SLOT_KEYS[a.slot as 0 | 1 | 2 | 3] ?? 'inv.active')} onOpen={onOpen} />
           ))}
-          {inv.trinkets.map((t, i) => (
-            <Tile
-              key={`t${i}`}
-              kind="trinket"
-              id={t & ~TRINKET_GOLDEN_FLAG}
-              badge={t & TRINKET_GOLDEN_FLAG ? 'Dorada' : 'Baratija'}
-              onOpen={onOpen}
-            />
+          {inv.trinkets.map((x, i) => (
+            <Tile key={`t${i}`} kind="trinket" id={x & ~TRINKET_GOLDEN_FLAG} badge={x & TRINKET_GOLDEN_FLAG ? t('inv.golden') : t('inv.trinket')} onOpen={onOpen} />
           ))}
           {inv.cards.map((c, i) =>
             c.id !== null ? (
-              <Tile key={`c${i}`} kind="card" id={c.id} badge="Carta" onOpen={onOpen} />
+              <Tile key={`c${i}`} kind="card" id={c.id} badge={t('inv.card')} onOpen={onOpen} />
             ) : (
-              <UnknownTile key={`c${i}`} kind="card" label="Carta desconocida" hint="El juego no ha dado su identificador" />
+              <UnknownTile key={`c${i}`} kind="card" label={t('unknown.card')} hint={t('inv.cardNoId')} />
             ),
           )}
           {inv.pills.map((p, i) =>
             p.effect !== null ? (
-              <Tile key={`p${i}`} kind="pill" id={p.effect} badge="Pastilla" onOpen={onOpen} />
+              <Tile key={`p${i}`} kind="pill" id={p.effect} badge={t('inv.pill')} onOpen={onOpen} />
             ) : (
-              <UnknownTile key={`p${i}`} kind="pill" label="Pastilla desconocida" hint="Se descubrirá al tomarla" />
+              <UnknownTile key={`p${i}`} kind="pill" label={t('unknown.pill')} hint={t('inv.pillHint')} />
             ),
           )}
         </ul>
@@ -99,7 +95,7 @@ export function InventoryPanel({ onOpen }: { onOpen: Open }) {
           ))}
         </ul>
       ) : (
-        <p className="muted small">Todavía no has recogido objetos.</p>
+        <p className="muted small">{t('inv.empty')}</p>
       )}
     </section>
   );
@@ -109,18 +105,19 @@ export function InventoryPanel({ onOpen }: { onOpen: Open }) {
 export function SynergiesPanel() {
   const { state } = useClient();
   const lang = useLang();
+  const t = useT();
   const refs = useMemo(
     () => [
       ...state.inventory.collectibles.map((c) => ({ kind: 'collectible' as const, id: c.id })),
-      ...state.inventory.trinkets.map((t) => ({ kind: 'trinket' as const, id: t & ~TRINKET_GOLDEN_FLAG })),
+      ...state.inventory.trinkets.map((x) => ({ kind: 'trinket' as const, id: x & ~TRINKET_GOLDEN_FLAG })),
     ],
     [state.inventory],
   );
   const key = refs.map((r) => `${r.kind}:${r.id}`).sort().join(',');
   const [list, setList] = useState<SynergyRecord[]>([]);
   useEffect(() => {
-    const t = setTimeout(() => void fetchSynergiesAmong(refs).then(setList), 250);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => void fetchSynergiesAmong(refs).then(setList), 250);
+    return () => clearTimeout(timer);
   }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
   // Merge both directions of the same pair.
   const pairs = useMemo(() => {
@@ -132,9 +129,9 @@ export function SynergiesPanel() {
     return [...m.values()];
   }, [list]);
   return (
-    <section className="panel panel--syn" aria-label="Sinergias activas">
+    <section className="panel panel--syn" aria-label={t('syn.title')}>
       <h2 className="panel__title">
-        <SparkIcon size={20} /> Sinergias activas <span className="muted">({pairs.length})</span>
+        <SparkIcon size={20} /> {t('syn.title')} <span className="muted">({pairs.length})</span>
       </h2>
       {pairs.length ? (
         <ul className="synergies">
@@ -148,14 +145,14 @@ export function SynergiesPanel() {
               ))}
               {group[0].source.url ? (
                 <a className="small" href={group[0].source.url} target="_blank" rel="noreferrer">
-                  fuente
+                  {t('syn.source')}
                 </a>
               ) : null}
             </li>
           ))}
         </ul>
       ) : (
-        <p className="muted small">Sin sinergias conocidas entre tus objetos (fuente: wiki, CC BY-SA 4.0).</p>
+        <p className="muted small">{t('syn.empty')}</p>
       )}
     </section>
   );

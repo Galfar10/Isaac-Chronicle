@@ -1,4 +1,6 @@
 import { CURSES, ROOM_TYPE_NAMES } from '@irtc/protocol';
+import type { Lang } from './i18n';
+import { translate } from './strings';
 
 export function clock(seconds: number): string {
   const s = Math.max(0, Math.floor(seconds));
@@ -10,13 +12,13 @@ export function clock(seconds: number): string {
   return h ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
 }
 
-export function ago(ms: number | null, now: number): string {
+export function ago(ms: number | null, now: number, lang: Lang = 'es'): string {
   if (ms === null) return '—';
   const d = Math.max(0, Math.round((now - ms) / 1000));
-  if (d < 2) return 'ahora';
-  if (d < 60) return `hace ${d} s`;
-  if (d < 3600) return `hace ${Math.floor(d / 60)} min`;
-  return `hace ${Math.floor(d / 3600)} h`;
+  if (d < 2) return translate(lang, 'ago.now');
+  if (d < 60) return translate(lang, 'ago.s', { n: d });
+  if (d < 3600) return translate(lang, 'ago.min', { n: Math.floor(d / 60) });
+  return translate(lang, 'ago.h', { n: Math.floor(d / 3600) });
 }
 
 export function signed(n: number, digits = 2): string {
@@ -58,8 +60,9 @@ const ROOM_TYPE_ES: Record<number, string> = {
   29: 'Ultrasecreta',
 };
 
-export function roomTypeName(type: number | null | undefined): string {
+export function roomTypeName(type: number | null | undefined, lang: Lang = 'es'): string {
   if (type === null || type === undefined) return '—';
+  if (lang === 'en') return ROOM_TYPE_NAMES[type] ?? `Room ${type}`;
   return ROOM_TYPE_ES[type] ?? ROOM_TYPE_NAMES[type] ?? `Sala ${type}`;
 }
 
@@ -68,13 +71,13 @@ export function curseNames(mask: number): string[] {
 }
 
 /** Floor label from the game (strips untranslated "#KEY" strings). */
-export function floorName(name: string | null | undefined, stage: number | null | undefined): string {
+export function floorName(name: string | null | undefined, stage: number | null | undefined, lang: Lang = 'es'): string {
   if (name && !name.startsWith('#')) return name;
-  return stage ? `Piso ${stage}` : '—';
+  return stage ? translate(lang, 'floor.n', { n: stage }) : '—';
 }
 
-export function priceLabel(price: number): string | null {
+export function priceLabel(price: number, lang: Lang = 'es'): string | null {
   if (price > 0) return `${price} ¢`;
-  if (price < 0) return 'Trato del diablo';
+  if (price < 0) return translate(lang, 'price.devil');
   return null;
 }

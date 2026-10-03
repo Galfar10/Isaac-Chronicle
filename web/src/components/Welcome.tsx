@@ -1,57 +1,55 @@
 import { PROJECT } from '@irtc/protocol';
 import { isHostedPage } from '../lib/connection';
 import { useClient } from '../lib/gameStore';
+import { useT } from '../lib/strings';
 
-/** "How to start" guide, shown while there is no run (first visit, hosted page...). */
+/** "Getting started" guide, shown while there is no run (first visit, hosted page...). */
 export function Welcome() {
   const client = useClient();
+  const t = useT();
   const companionOk = client.socket === 'open';
   const gameOk = client.state.connection.game === 'connected';
   const hosted = isHostedPage();
   const step = (done: boolean) => (done ? 'welcome__step welcome__step--done' : 'welcome__step');
+  const addr = `127.0.0.1:${PROJECT.companionPort}`;
   return (
-    <section className="panel welcome" aria-label="Cómo empezar">
-      <h2 className="panel__title">Cómo empezar</h2>
-      <p className="welcome__lead">
-        <strong>{PROJECT.name}</strong> muestra tu partida de The Binding of Isaac en tiempo real: stats, objetos al acercarte,
-        inventario, sinergias, mapa e historial. Nada se dibuja dentro del juego.
-      </p>
+    <section className="panel welcome" aria-label={t('welcome.title')}>
+      <h2 className="panel__title">{t('welcome.title')}</h2>
+      <p className="welcome__lead">{t('welcome.lead', { name: PROJECT.name })}</p>
       <ol className="welcome__steps">
         <li className={step(gameOk)}>
-          <strong>Suscríbete al mod</strong> en Steam Workshop
+          <strong>{t('welcome.step1')}</strong> {t('welcome.step1b')} (
           {PROJECT.workshopUrl ? (
-            <>
-              {' '}
-              (<a href={PROJECT.workshopUrl} target="_blank" rel="noreferrer">abrir en Steam</a>)
-            </>
+            <a href={PROJECT.workshopUrl} target="_blank" rel="noreferrer">
+              {t('welcome.openSteam')}
+            </a>
           ) : (
-            <> (busca “{PROJECT.name}”)</>
+            t('welcome.search', { name: PROJECT.name })
           )}
-          .
+          ).
         </li>
         <li className={step(companionOk)}>
-          <strong>Descarga y abre Isaac Chronicle Companion</strong> (
+          <strong>{t('welcome.step2')}</strong> (
           <a href={PROJECT.releasesUrl} target="_blank" rel="noreferrer">
             IsaacCompanion-win-x64.zip
           </a>
-          ). Es un único .exe: déjalo abierto mientras juegas.
-          {companionOk ? <span className="welcome__ok"> ✓ detectado</span> : null}
+          ). {t('welcome.step2b')}
+          {companionOk ? <span className="welcome__ok"> {t('welcome.detected')}</span> : null}
         </li>
         <li className={step(gameOk)}>
-          <strong>Inicia Isaac</strong> y empieza o continúa una partida.
-          {gameOk ? <span className="welcome__ok"> ✓ conectado</span> : null}
+          <strong>{t('welcome.step3')}</strong> {t('welcome.step3b')}
+          {gameOk ? <span className="welcome__ok"> {t('welcome.connected')}</span> : null}
         </li>
       </ol>
+      <p className="welcome__note">{t('welcome.lang')}</p>
       {hosted && !companionOk ? (
         <p className="welcome__note">
-          Esta página se conecta a la app en tu propio PC (<code>127.0.0.1:{PROJECT.companionPort}</code>); tus datos no salen de tu
-          ordenador. Si el navegador pregunta por el acceso a la <em>red local</em>, permítelo. También puedes abrir directamente{' '}
-          <a href={`http://127.0.0.1:${PROJECT.companionPort}`}>http://127.0.0.1:{PROJECT.companionPort}</a>.
+          {t('welcome.note', { addr })} <a href={`http://${addr}`}>http://{addr}</a>.
         </p>
       ) : null}
       <p className="welcome__links small">
         <a href={PROJECT.repoUrl} target="_blank" rel="noreferrer">
-          Código y documentación en GitHub
+          {t('welcome.code')}
         </a>
       </p>
     </section>

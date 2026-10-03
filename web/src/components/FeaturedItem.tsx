@@ -3,19 +3,22 @@ import type { RoomItem } from '@irtc/protocol';
 import { useClient, useItem, useNow } from '../lib/gameStore';
 import { priceLabel, roomTypeName } from '../lib/format';
 import { itemName, useLang } from '../lib/i18n';
-import { ItemCardBody, UNKNOWN_NAME } from './ItemCard';
+import { useT } from '../lib/strings';
+import { ItemCardBody, unknownName } from './ItemCard';
 import { ItemImage } from './ItemImage';
 
 const PICKED_HIGHLIGHT_MS = 10_000;
 const PICKED_PRIORITY_MS = 5_000;
 
 /**
- * The "popup": a card describing the item next to the player BEFORE it is picked up.
- * Falls back to "OBJETO OBTENIDO" right after a pickup.
+ * The central card: the item next to the player BEFORE it is picked up, or what was just
+ * obtained / discovered.
  */
 export function FeaturedItem({ pinnedKey, onPin, onOpen }: { pinnedKey: number | null; onPin: (k: number | null) => void; onOpen: (r: { kind: RoomItem['kind']; id: number }) => void }) {
   const { state } = useClient();
   const now = useNow(1000);
+  const lang = useLang();
+  const t = useT();
   const items = state.roomItems;
   const pinned = pinnedKey !== null ? items.find((i) => i.key === pinnedKey) : undefined;
   const nearest = items.find((i) => i.key === state.nearestKey);
@@ -36,20 +39,20 @@ export function FeaturedItem({ pinnedKey, onPin, onOpen }: { pinnedKey: number |
 
   const obtained =
     kind === 'card'
-      ? 'CARTA OBTENIDA'
+      ? t('feat.cardObtained')
       : kind === 'pill'
         ? picked?.how === 'used'
-          ? 'PASTILLA DESCUBIERTA'
-          : 'PASTILLA OBTENIDA'
+          ? t('feat.pillDiscovered')
+          : t('feat.pillObtained')
         : kind === 'trinket'
-          ? 'BARATIJA OBTENIDA'
-          : 'OBJETO OBTENIDO';
+          ? t('feat.trinketObtained')
+          : t('feat.obtained');
   const label = {
-    near: 'OBJETO CERCANO',
-    available: 'OBJETO DISPONIBLE',
+    near: t('feat.near'),
+    available: t('feat.available'),
     picked: obtained,
-    last: kind === 'card' ? 'ÚLTIMA CARTA' : kind === 'pill' ? 'ÚLTIMA PASTILLA' : 'ÚLTIMO OBJETO',
-    empty: 'OBJETO CERCANO',
+    last: kind === 'card' ? t('feat.lastCard') : kind === 'pill' ? t('feat.lastPill') : t('feat.last'),
+    empty: t('feat.near'),
   }[mode];
   const animKey = `${mode === 'last' ? 'picked' : mode}:${kind}:${id}`;
 
@@ -61,31 +64,27 @@ export function FeaturedItem({ pinnedKey, onPin, onOpen }: { pinnedKey: number |
 
   if (mode === 'empty') {
     return (
-      <section className="panel panel--featured" aria-label="Objeto cercano">
+      <section className="panel panel--featured" aria-label={label}>
         <h2 className="panel__title">{label}</h2>
         <div className="card card--empty">
-          <p>
-            {state.run
-              ? `${roomTypeName(state.room?.type)}: no hay objetos a la vista.`
-              : 'Cuando aparezca un objeto en la habitación, su ficha se mostrará aquí antes de que lo recojas.'}
-          </p>
+          <p>{state.run ? t('feat.emptyRoom', { room: roomTypeName(state.room?.type, lang) }) : t('feat.emptyNoRun')}</p>
         </div>
       </section>
     );
   }
 
   const live = mode === 'near' || mode === 'available';
-  const price = live ? priceLabel(target!.price) : null;
+  const price = live ? priceLabel(target!.price, lang) : null;
   const unknown = live ? target!.unknown : null;
-  const ribbon = unknown && unknown !== 'blind' ? UNKNOWN_NAME[kind].toUpperCase() : label;
+  const ribbon = unknown && unknown !== 'blind' ? unknownName(kind, t).toUpperCase() : label;
   return (
     <section className="panel panel--featured" aria-label={label} aria-live="polite">
       <h2 className="panel__title">
         {label}
-        {live && target!.distance !== null ? <span className="dist mono"> · {target!.distance.toFixed(1)} casillas</span> : null}
+        {live && target!.distance !== null ? <span className="dist mono"> · {t('feat.tiles', { n: target!.distance.toFixed(1) })}</span> : null}
         {pinned ? (
           <button className="btn btn--tiny" onClick={() => onPin(null)}>
-            seguir al más cercano
+            {t('feat.follow')}
           </button>
         ) : null}
       </h2>
@@ -104,7 +103,7 @@ export function FeaturedItem({ pinnedKey, onPin, onOpen }: { pinnedKey: number |
         {price || (live && target!.optionsIndex > 0) ? (
           <div className="card__tags">
             {price ? <span className="chip chip--blood">{price}</span> : null}
-            {live && target!.optionsIndex > 0 ? <span className="chip">Elige solo uno</span> : null}
+            {live && target!.optionsIndex > 0 ? <span className="chip">{t('feat.chooseOne')}</span> : null}
           </div>
         ) : null}
         <ItemCardBody item={item} kind={kind} id={id} unknown={unknown} loading={loading} fallbackName={live ? target!.name : undefined} compact />
@@ -113,15 +112,16 @@ export function FeaturedItem({ pinnedKey, onPin, onOpen }: { pinnedKey: number |
   );
 }
 
-/** "OBJETOS EN LA HABITACIÓN" list, nearest highlighted, distances live. */
+/** Items in the room: nearest highlighted, distances live, unknown ones stay unknown. */
 export function RoomItems({ pinnedKey, onPin }: { pinnedKey: number | null; onPin: (k: number) => void }) {
   const { state } = useClient();
+  const t = useT();
   const items = [...state.roomItems].sort((a, b) => (a.distance ?? 99) - (b.distance ?? 99));
   const other = Object.values(state.otherPickups).reduce((a, b) => a + b, 0);
   return (
-    <section className="panel panel--room" aria-label="Objetos en la habitación">
+    <section className="panel panel--room" aria-label={t('room.title')}>
       <h2 className="panel__title">
-        En la habitación <span className="muted">({items.length})</span>
+        {t('room.title')} <span className="muted">({items.length})</span>
       </h2>
       {items.length ? (
         <ul className="roomlist">
@@ -130,24 +130,24 @@ export function RoomItems({ pinnedKey, onPin }: { pinnedKey: number | null; onPi
           ))}
         </ul>
       ) : (
-        <p className="muted small">Nada que recoger aquí.</p>
+        <p className="muted small">{t('room.nothing')}</p>
       )}
-      {other ? <p className="muted small">+{other} recolectables menores (monedas, corazones, cofres…)</p> : null}
+      {other ? <p className="muted small">{t('room.minor', { n: other })}</p> : null}
     </section>
   );
 }
 
 function RoomRow({ r, nearest, pinned, onPin }: { r: RoomItem; nearest: boolean; pinned: boolean; onPin: () => void }) {
   const lang = useLang();
+  const t = useT();
   const { item } = useItem(r.kind, r.id);
-  const name =
-    r.id === null ? (r.unknown === 'blind' ? 'Objeto oculto' : UNKNOWN_NAME[r.kind]) : itemName(item, lang, r.name ?? `#${r.id}`);
+  const name = r.id === null ? (r.unknown === 'blind' ? t('unknown.blind') : unknownName(r.kind, t)) : itemName(item, lang, r.name ?? `#${r.id}`);
   return (
     <li className={`roomrow ${nearest ? 'roomrow--nearest' : ''} ${pinned ? 'roomrow--pinned' : ''}`}>
-      <button onClick={onPin} title="Fijar en la ficha">
+      <button onClick={onPin} title={t('room.pin')}>
         <ItemImage item={item} kind={r.kind} size={36} hidden={r.id === null} />
         <span className="roomrow__name">{name}</span>
-        {r.price ? <span className="chip chip--blood chip--small">{priceLabel(r.price)}</span> : null}
+        {r.price ? <span className="chip chip--blood chip--small">{priceLabel(r.price, lang)}</span> : null}
         <span className="roomrow__dist mono">{r.distance !== null ? r.distance.toFixed(1) : '—'}</span>
       </button>
     </li>

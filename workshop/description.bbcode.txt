@@ -1,48 +1,94 @@
 [h1]Isaac Chronicle — Real-Time Companion[/h1]
 
-[b]Este mod conecta tu partida de Isaac con una interfaz web en tiempo real.[/b]
-[i]This mod connects your Isaac run to a real-time web interface.[/i]
+[b]ESPAÑOL[/b] · [b]ENGLISH[/b] (below / más abajo)
 
-Pensado para un [b]segundo monitor[/b] o el [b]móvil[/b]: mientras juegas, una web muestra tus estadísticas reales, los objetos cercanos, tu inventario, las sinergias conocidas entre tus objetos, el mapa del piso y el historial de la run.
+[hr][/hr]
+
+[h2]🇪🇸 Español[/h2]
+
+[b]Este mod conecta tu partida de Isaac con una interfaz web en tiempo real.[/b]
+
+Pensado para un [b]segundo monitor[/b] o el [b]móvil[/b]: mientras juegas, una web muestra tus estadísticas reales, el objeto que tienes cerca, tu inventario, las sinergias conocidas entre tus objetos, el mapa del piso y el historial de la run.
 
 [b]El mod no dibuja nada dentro del juego.[/b] No es un EID: no añade texto ni menús en pantalla.
 
-[h2]Descubrimiento, no radar[/h2]
+[h3]Descubrimiento, no radar[/h3]
 [list]
 [*] Los [b]pedestales[/b] solo se identifican cuando te acercas; de lejos son un "objeto desconocido".
 [*] Las [b]cartas[/b] se revelan al recogerlas y las [b]pastillas[/b] al tomarlas, como en el juego.
 [*] Respeta [b]Curse of the Blind[/b], [b]Curse of the Lost[/b], [b]Curse of the Unknown[/b] y [b]Amnesia[/b]: si el juego te oculta algo, la web también.
 [/list]
 
-[h2]Cómo se usa[/h2]
+[h3]Idiomas[/h3]
+La web funciona en [b]castellano e inglés[/b]: el botón [b]ES/EN[/b] (arriba a la derecha) cambia toda la interfaz y los nombres y frases de los objetos, que salen del propio juego. Las descripciones largas y las sinergias vienen de la wiki y están en inglés.
+
+[h3]Cómo se usa[/h3]
 [olist]
 [*] Suscríbete a este mod.
 [*] Descarga la app gratuita [b]Isaac Chronicle Companion[/b]: [url=https://github.com/Galfar10/Isaac-Chronicle/releases/latest]IsaacCompanion-win-x64.zip[/url]. Es un único .exe: no instala nada más.
 [*] Ábrela y déjala abierta mientras juegas. Se abre [url=http://127.0.0.1:47823]http://127.0.0.1:47823[/url] (o usa [url=https://galfar10.github.io/Isaac-Chronicle/]la web[/url]).
 [*] Inicia Isaac y juega. La web mostrará [b]ISAAC CONECTADO[/b].
 [/olist]
+Modo segundo monitor: botón "2º monitor" (pantalla completa, todo en una pantalla).
 
-Modo segundo monitor: botón "2º monitor" en la web (pantalla completa, todo en una pantalla).
-
-[h2]Qué muestra[/h2]
+[h3]Qué muestra[/h3]
 [list]
-[*] Estadísticas reales del juego al momento: daño, lágrimas, alcance, velocidad de disparo, velocidad, suerte, vida, monedas, bombas, llaves y transformaciones.
+[*] Estadísticas reales al momento: daño, lágrimas, alcance, velocidad de disparo, velocidad, suerte, vida, monedas, bombas, llaves y transformaciones.
 [*] Ficha del objeto cercano con imagen, calidad, descripción, efectos y sinergias con tu inventario.
 [*] Inventario visual, sinergias activas, mapa del piso (solo lo que ya ves en el minimapa) e historial de la run.
 [*] Tus cartas y pastillas descubiertas se guardan entre partidas.
 [/list]
 
-[h2]Por qué hace falta la app[/h2]
-Los mods de Isaac no pueden usar la red ni abrir programas (salvo con la opción insegura [i]--luadebug[/i]). Este mod escribe los datos en el [i]log.txt[/i] del juego y la app los lee y los muestra en la web, siempre en tu propio PC (127.0.0.1). [b]No necesitas --luadebug.[/b]
+[h3]Por qué hace falta la app[/h3]
+Los mods de Isaac no pueden usar la red ni abrir programas (salvo con la opción insegura [i]--luadebug[/i]). Este mod escribe los datos en el [i]log.txt[/i] del juego y la app los lee y los muestra, siempre en tu propio PC (127.0.0.1). [b]No necesitas --luadebug.[/b]
 
-[h2]Privacidad[/h2]
-Todo funciona en local. No se guarda tu nombre ni tu Steam ID. Cada run usa un identificador aleatorio.
+[h3]Privacidad y compatibilidad[/h3]
+Todo funciona en local; no se guarda tu nombre ni tu Steam ID. Repentance y Repentance+, con o sin REPENTOGON, compatible con otros mods.
 
-[h2]Compatibilidad[/h2]
-Repentance y Repentance+. Funciona con o sin REPENTOGON y con otros mods (los objetos de otros mods se muestran con el nombre que da el juego).
+[hr][/hr]
 
-[h2]English[/h2]
-A second-monitor / phone companion for your run: real in-game stats, the item you are standing next to (only revealed when you get close), inventory, known synergies, floor map and run history. Cards are revealed when picked up and pills when taken; curses that hide the map or health are respected. Requires the free Isaac Chronicle Companion app (link above). Nothing is drawn in-game.
+[h2]🇬🇧 English[/h2]
+
+[b]This mod connects your Isaac run to a real-time web interface.[/b]
+
+Made for a [b]second monitor[/b] or your [b]phone[/b]: while you play, a web page shows your real stats, the item you are standing next to, your inventory, known synergies between your items, the floor map and the run history.
+
+[b]The mod draws nothing in-game.[/b] It is not an EID: no text or menus are added on screen.
+
+[h3]Discovery, not a radar[/h3]
+[list]
+[*] [b]Pedestal items[/b] are only identified when you get close; from afar they are an "unknown item".
+[*] [b]Cards[/b] are revealed when you pick them up and [b]pills[/b] when you take them, like in the game.
+[*] [b]Curse of the Blind[/b], [b]Curse of the Lost[/b], [b]Curse of the Unknown[/b] and [b]Amnesia[/b] are respected: if the game hides something, so does the page.
+[/list]
+
+[h3]Languages[/h3]
+The page works in [b]English and Spanish[/b]: the [b]ES/EN[/b] button (top right) switches the whole interface plus item names and quotes, taken from the game itself. Long descriptions and synergies come from the wiki and are in English.
+
+[h3]How to use[/h3]
+[olist]
+[*] Subscribe to this mod.
+[*] Download the free [b]Isaac Chronicle Companion[/b] app: [url=https://github.com/Galfar10/Isaac-Chronicle/releases/latest]IsaacCompanion-win-x64.zip[/url]. It is a single .exe: nothing else to install.
+[*] Run it and keep it open while you play. [url=http://127.0.0.1:47823]http://127.0.0.1:47823[/url] opens automatically (or use [url=https://galfar10.github.io/Isaac-Chronicle/]the website[/url]).
+[*] Start Isaac and play. The page will show [b]ISAAC CONNECTED[/b].
+[/olist]
+Second-monitor mode: "2nd monitor" button (fullscreen, everything on one screen).
+
+[h3]What it shows[/h3]
+[list]
+[*] Real stats instantly: damage, tears, range, shot speed, speed, luck, health, coins, bombs, keys and transformations.
+[*] Nearby item card with sprite, quality, description, effects and synergies with your inventory.
+[*] Visual inventory, active synergies, floor map (only what your minimap already shows) and run history.
+[*] Discovered cards and pills are saved across runs.
+[/list]
+
+[h3]Why the app is needed[/h3]
+Isaac mods cannot use the network or start programs (except with the unsafe [i]--luadebug[/i] option). This mod writes the data to the game's [i]log.txt[/i] and the app reads it and shows it, always on your own PC (127.0.0.1). [b]No --luadebug needed.[/b]
+
+[h3]Privacy and compatibility[/h3]
+Everything runs locally; your name and Steam ID are never stored. Repentance and Repentance+, with or without REPENTOGON, compatible with other mods.
+
+[hr][/hr]
 
 Código abierto / Open source: [url=https://github.com/Galfar10/Isaac-Chronicle]github.com/Galfar10/Isaac-Chronicle[/url]
-Textos de objetos y sinergias: Binding of Isaac Wiki (bindingofisaacrebirth.wiki.gg), CC BY-SA 4.0.
+Textos de objetos y sinergias / Item and synergy texts: Binding of Isaac Wiki (bindingofisaacrebirth.wiki.gg), CC BY-SA 4.0.

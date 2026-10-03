@@ -4,6 +4,7 @@ import { fetchCharacters } from '../lib/api';
 import { ago, clock, curseNames, floorName } from '../lib/format';
 import { useClient, useNow } from '../lib/gameStore';
 import { useLang, type Lang } from '../lib/i18n';
+import { useT } from '../lib/strings';
 import { ExpandIcon } from './Icons';
 
 function useCharacterNames() {
@@ -17,35 +18,34 @@ function useCharacterNames() {
 export function ConnectionBadge() {
   const client = useClient();
   const now = useNow(1000);
+  const lang = useLang();
+  const t = useT();
   const c = client.state.connection;
   let tone: 'ok' | 'warn' | 'bad';
   let label: string;
   let detail: string;
   if (client.socket !== 'open') {
     tone = client.everConnected ? 'bad' : 'warn';
-    label = client.socket === 'connecting' ? 'CONECTANDO' : 'COMPANION DESCONECTADO';
-    detail =
-      client.retryInMs !== null
-        ? `Reintentando en ${Math.ceil(client.retryInMs / 1000)} s — ¿está abierta la app Isaac Companion?`
-        : 'Buscando la app Isaac Companion…';
+    label = client.socket === 'connecting' ? t('conn.connecting') : t('conn.companionDown');
+    detail = client.retryInMs !== null ? t('conn.retry', { s: Math.ceil(client.retryInMs / 1000) }) : t('conn.searching');
   } else if (c.game === 'connected') {
     tone = 'ok';
-    label = c.paused ? 'ISAAC CONECTADO · PAUSA' : 'ISAAC CONECTADO';
-    detail = `Último paquete ${ago(c.lastPacketAt, now)}`;
+    label = c.paused ? t('conn.connectedPaused') : t('conn.connected');
+    detail = t('conn.lastPacket', { ago: ago(c.lastPacketAt, now, lang) });
   } else if (c.game === 'idle') {
     tone = 'warn';
-    label = 'ISAAC ABIERTO · SIN DATOS';
-    detail = 'Empieza o continúa una partida. Si no cambia, comprueba que el mod está activado.';
+    label = t('conn.idle');
+    detail = t('conn.idleDetail');
   } else if (c.game === 'waiting') {
     tone = 'warn';
-    label = 'ESPERANDO A ISAAC';
-    detail = 'Abre The Binding of Isaac con el mod activado.';
+    label = t('conn.waiting');
+    detail = t('conn.waitingDetail');
   } else {
     tone = 'bad';
-    label = 'ISAAC DESCONECTADO';
-    detail = `Sin datos ${ago(c.lastPacketAt, now)}`;
+    label = t('conn.disconnected');
+    detail = t('conn.noData', { ago: ago(c.lastPacketAt, now, lang) });
   }
-  const error = c.error ?? (!c.protocolOk ? 'Versión del mod incompatible: actualiza el mod y la app.' : null);
+  const error = c.error ?? (!c.protocolOk ? t('conn.incompatible') : null);
   return (
     <div className={`conn conn--${tone}`} role="status" aria-live="polite" title={detail}>
       <span className="conn__dot" aria-hidden />
@@ -64,70 +64,70 @@ interface HeaderProps {
 export function Header({ monitor, onToggleMonitor, onToggleLang }: HeaderProps) {
   const { state } = useClient();
   const lang: Lang = useLang();
+  const t = useT();
   const characters = useCharacterNames();
   const run = state.run;
   const ch = run?.character.type !== null && run?.character.type !== undefined ? characters.get(run.character.type) : undefined;
   const charName = (lang === 'es' ? ch?.nameEs : ch?.name) ?? ch?.name ?? run?.character.name ?? '—';
   const curses = run?.floor ? curseNames(run.floor.curses) : [];
-  const status =
-    run?.status === 'dead' ? 'Muerte' : run?.status === 'won' ? 'Victoria' : run?.status === 'exited' ? 'Guardada / salida' : null;
+  const status = run?.status === 'dead' ? t('run.dead') : run?.status === 'won' ? t('run.won') : run?.status === 'exited' ? t('run.exited') : null;
 
   return (
     <header className="header">
       <div className="header__brand">
-        <h1 className="title">Diario de la Run</h1>
+        <h1 className="title">{t('title')}</h1>
         <ConnectionBadge />
       </div>
       {run ? (
         <dl className="runinfo">
           <div>
-            <dt>Personaje</dt>
+            <dt>{t('run.character')}</dt>
             <dd>
               {run.character.tainted ? <span className="tainted">Tainted </span> : null}
               {charName}
             </dd>
           </div>
           <div>
-            <dt>Piso</dt>
-            <dd>{floorName(run.floor?.name, run.floor?.stage)}</dd>
+            <dt>{t('run.floor')}</dt>
+            <dd>{floorName(run.floor?.name, run.floor?.stage, lang)}</dd>
           </div>
           <div>
-            <dt>Tiempo</dt>
+            <dt>{t('run.time')}</dt>
             <dd className="mono">{clock(run.time)}</dd>
           </div>
           <div>
-            <dt>Semilla</dt>
+            <dt>{t('run.seed')}</dt>
             <dd className="mono">{run.seed ?? '—'}</dd>
           </div>
           <div>
-            <dt>Modo</dt>
+            <dt>{t('run.mode')}</dt>
             <dd>
               {DIFFICULTY_NAMES[run.difficulty ?? -1] ?? '—'}
-              {run.challenge ? ` · Reto ${run.challenge}` : ''}
+              {run.challenge ? ` · ${t('run.challenge')} ${run.challenge}` : ''}
             </dd>
           </div>
           {status ? (
             <div>
-              <dt>Estado</dt>
+              <dt>{t('run.status')}</dt>
               <dd className={`runstatus runstatus--${run.status}`}>{status}</dd>
             </div>
           ) : null}
           {curses.length ? (
             <div className="runinfo__curses">
-              <dt>Maldiciones</dt>
+              <dt>{t('run.curses')}</dt>
               <dd>{curses.join(' · ')}</dd>
             </div>
           ) : null}
         </dl>
       ) : (
-        <p className="header__empty">Sin partida en curso.</p>
+        <p className="header__empty">{t('run.none')}</p>
       )}
       <div className="header__tools">
-        <button className="btn" onClick={onToggleLang} title="Idioma de los nombres de objetos">
+        <button className="btn" onClick={onToggleLang} title={t('btn.langTitle')}>
           {lang === 'es' ? 'ES' : 'EN'}
         </button>
-        <button className="btn" onClick={onToggleMonitor} title="Modo segundo monitor (pantalla completa)">
-          <ExpandIcon size={18} /> {monitor ? 'Salir' : '2º monitor'}
+        <button className="btn" onClick={onToggleMonitor} title={t('btn.monitorTitle')}>
+          <ExpandIcon size={18} /> {monitor ? t('btn.exit') : t('btn.monitor')}
         </button>
       </div>
     </header>

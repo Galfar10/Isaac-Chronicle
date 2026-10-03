@@ -1,6 +1,8 @@
 import { MAP_GRID_WIDTH, ROOM_SHAPES } from '@irtc/protocol';
 import { useClient } from '../lib/gameStore';
 import { roomTypeName } from '../lib/format';
+import { useLang } from '../lib/i18n';
+import { useT } from '../lib/strings';
 import { MapIcon } from './Icons';
 
 const CELL = 22;
@@ -29,32 +31,30 @@ const GLYPH: Record<number, string> = {
  */
 export function MapPanel() {
   const { state } = useClient();
+  const lang = useLang();
+  const t = useT();
   const rooms = (state.map ?? []).filter((r) => r.gridIndex >= 0);
   const current = state.room;
   if (state.mapHidden) {
     return (
-      <section className="panel panel--map" aria-label="Mapa">
+      <section className="panel panel--map" aria-label={t('map.title')}>
         <h2 className="panel__title">
-          <MapIcon size={20} /> Mapa
+          <MapIcon size={20} /> {t('map.title')}
         </h2>
         <div className="map map--hidden">
           <span className="map__q">?</span>
-          <p>
-            {state.mapHidden === 'amnesia'
-              ? 'Amnesia: has olvidado el mapa de este piso.'
-              : 'Curse of the Lost: el mapa está oculto en este piso.'}
-          </p>
+          <p>{state.mapHidden === 'amnesia' ? t('map.amnesia') : t('map.lost')}</p>
         </div>
       </section>
     );
   }
   if (!rooms.length) {
     return (
-      <section className="panel panel--map" aria-label="Mapa">
+      <section className="panel panel--map" aria-label={t('map.title')}>
         <h2 className="panel__title">
-          <MapIcon size={20} /> Mapa
+          <MapIcon size={20} /> {t('map.title')}
         </h2>
-        <p className="muted small">El mapa se dibuja a medida que exploras.</p>
+        <p className="muted small">{t('map.empty')}</p>
       </section>
     );
   }
@@ -70,13 +70,13 @@ export function MapPanel() {
   const h = (maxY - minY) * (CELL + GAP) + 10;
   const offRoom = current && (current.index ?? 0) < 0;
   return (
-    <section className="panel panel--map" aria-label="Mapa">
+    <section className="panel panel--map" aria-label={t('map.title')}>
       <h2 className="panel__title">
-        <MapIcon size={20} /> Mapa
-        {offRoom ? <span className="muted small"> · fuera del mapa ({roomTypeName(current?.type)})</span> : null}
+        <MapIcon size={20} /> {t('map.title')}
+        {offRoom ? <span className="muted small"> · {t('map.offgrid', { room: roomTypeName(current?.type, lang) })}</span> : null}
       </h2>
       <div className="map">
-        <svg viewBox={`-5 -5 ${w} ${h}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mapa del piso">
+        <svg viewBox={`-5 -5 ${w} ${h}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label={t('map.title')}>
           {cells.map(({ r, x, y, shape }) => {
             const px = (x - minX) * (CELL + GAP);
             const py = (y - minY) * (CELL + GAP);
@@ -101,16 +101,19 @@ export function MapPanel() {
                     {glyph}
                   </text>
                 ) : null}
-                <title>{roomTypeName(r.type)}{r.visited ? '' : ' (sin visitar)'}</title>
+                <title>
+                  {roomTypeName(r.type, lang)}
+                  {r.visited ? '' : t('map.unvisited')}
+                </title>
               </g>
             );
           })}
         </svg>
       </div>
       <div className="map__legend small">
-        <span><i className="lg lg--current" /> actual</span>
-        <span><i className="lg lg--visited" /> visitada</span>
-        <span><i className="lg lg--seen" /> vista</span>
+        <span><i className="lg lg--current" /> {t('map.current')}</span>
+        <span><i className="lg lg--visited" /> {t('map.visited')}</span>
+        <span><i className="lg lg--seen" /> {t('map.seen')}</span>
       </div>
     </section>
   );

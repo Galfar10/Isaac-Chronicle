@@ -11,7 +11,8 @@ The mod draws NOTHING in-game. It needs the free Isaac Chronicle Companion app:
 https://github.com/Galfar10/Isaac-Chronicle/releases/latest
 
 Web: https://galfar10.github.io/Isaac-Chronicle/ (or http://127.0.0.1:47823)
-No --luadebug needed. Works with or without REPENTOGON.</description>
+No --luadebug needed. Works with or without REPENTOGON.
+Idiomas / Languages: castellano e inglés (botón ES/EN) / English and Spanish (ES/EN button).</description>
     <version>0.1.1</version>
     <visibility>Public</visibility>
     <tag id="Lua"/>

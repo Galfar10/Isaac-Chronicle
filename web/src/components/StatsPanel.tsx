@@ -16,14 +16,15 @@ import {
 } from './Icons';
 import { fetchTransformations } from '../lib/api';
 import { useLang } from '../lib/i18n';
+import { useT } from '../lib/strings';
 
-const STAT_ROWS: { key: keyof Stats; label: string; icon: ReactNode; digits?: number }[] = [
-  { key: 'damage', label: 'Daño', icon: <DamageIcon /> },
-  { key: 'tears', label: 'Lágrimas', icon: <TearsIcon /> },
-  { key: 'range', label: 'Alcance', icon: <RangeIcon /> },
-  { key: 'shotSpeed', label: 'Vel. disparo', icon: <ShotSpeedIcon /> },
-  { key: 'speed', label: 'Velocidad', icon: <SpeedIcon /> },
-  { key: 'luck', label: 'Suerte', icon: <LuckIcon /> },
+const STAT_ROWS: { key: keyof Stats; label: 'stats.damage' | 'stats.tears' | 'stats.range' | 'stats.shotSpeed' | 'stats.speed' | 'stats.luck'; icon: ReactNode }[] = [
+  { key: 'damage', label: 'stats.damage', icon: <DamageIcon /> },
+  { key: 'tears', label: 'stats.tears', icon: <TearsIcon /> },
+  { key: 'range', label: 'stats.range', icon: <RangeIcon /> },
+  { key: 'shotSpeed', label: 'stats.shotSpeed', icon: <ShotSpeedIcon /> },
+  { key: 'speed', label: 'stats.speed', icon: <SpeedIcon /> },
+  { key: 'luck', label: 'stats.luck', icon: <LuckIcon /> },
 ];
 
 /** Shows "+1.69" next to a stat for a few seconds after it changes. */
@@ -48,16 +49,20 @@ function useStatDeltas() {
 
 function Hearts() {
   const { state } = useClient();
+  const t = useT();
   const h = state.player?.health;
   if (!h) return null;
+  const title = (
+    <div className="health__title">
+      <HeartIcon size={22} /> {t('stats.health')}
+    </div>
+  );
   if (state.player?.healthHidden) {
     return (
       <div className="health">
-        <div className="health__title">
-          <HeartIcon size={22} /> Vida
-        </div>
+        {title}
         <div className="hearts">
-          <span className="muted">??? — Curse of the Unknown oculta tu vida</span>
+          <span className="muted">{t('stats.healthHidden')}</span>
         </div>
       </div>
     );
@@ -79,18 +84,14 @@ function Hearts() {
   for (let i = 0; i < h.bone; i++) icons.push(<span key={`b${i}`} className="heart heart--bone heart--fill2" />);
   for (let i = 0; i < h.broken; i++) icons.push(<span key={`x${i}`} className="heart heart--broken heart--fill2" />);
   const extras = [
-    h.eternal ? `${h.eternal} eterno` : null,
-    h.golden ? `${h.golden} dorado${h.golden > 1 ? 's' : ''}` : null,
-    h.rotten ? `${h.rotten} podrido${h.rotten > 1 ? 's' : ''}` : null,
+    h.eternal ? t('hearts.eternal', { n: h.eternal }) : null,
+    h.golden ? t('hearts.golden', { n: h.golden }) : null,
+    h.rotten ? t('hearts.rotten', { n: h.rotten }) : null,
   ].filter(Boolean);
   return (
     <div className="health">
-      <div className="health__title">
-        <HeartIcon size={22} /> Vida
-      </div>
-      <div className="hearts" aria-label={`Rojos ${h.red / 2}/${h.max / 2}, almas ${h.soul / 2}, negros ${h.black}`}>
-        {icons.length ? icons : <span className="muted">Sin corazones</span>}
-      </div>
+      {title}
+      <div className="hearts">{icons.length ? icons : <span className="muted">{t('stats.noHearts')}</span>}</div>
       {extras.length ? <div className="health__extra">{extras.join(' · ')}</div> : null}
     </div>
   );
@@ -98,18 +99,19 @@ function Hearts() {
 
 function Resources() {
   const { state } = useClient();
+  const t = useT();
   const r = state.player?.resources;
   if (!r) return null;
   return (
     <div className="resources">
-      <span title="Monedas">
+      <span title={t('stats.coins')}>
         <CoinIcon size={22} /> {String(r.coins).padStart(2, '0')}
       </span>
-      <span title="Bombas">
+      <span title={t('stats.bombs')}>
         <BombIcon size={22} /> {String(r.bombs).padStart(2, '0')}
         {r.goldenBomb ? <em className="golden">∞</em> : null}
       </span>
-      <span title="Llaves">
+      <span title={t('stats.keys')}>
         <KeyIcon size={22} /> {String(r.keys).padStart(2, '0')}
         {r.goldenKey ? <em className="golden">∞</em> : null}
       </span>
@@ -120,9 +122,10 @@ function Resources() {
 function Transformations() {
   const { state } = useClient();
   const lang = useLang();
+  const t = useT();
   const [names, setNames] = useState<Map<number, { name: string; nameEs: string | null }>>(new Map());
   useEffect(() => {
-    void fetchTransformations().then((l) => setNames(new Map(l.map((t) => [t.id, t]))));
+    void fetchTransformations().then((l) => setNames(new Map(l.map((x) => [x.id, x]))));
   }, []);
   const forms = state.player?.transformations ?? [];
   if (!forms.length) return null;
@@ -132,7 +135,7 @@ function Transformations() {
         const n = names.get(f);
         return (
           <span key={f} className="chip chip--gold">
-            {(lang === 'es' ? n?.nameEs : n?.name) ?? n?.name ?? `Forma ${f}`}
+            {(lang === 'es' ? n?.nameEs : n?.name) ?? n?.name ?? t('stats.form', { n: f })}
           </span>
         );
       })}
@@ -142,11 +145,12 @@ function Transformations() {
 
 export function StatsPanel() {
   const { state } = useClient();
+  const t = useT();
   const stats = state.stats;
   const deltas = useStatDeltas();
   return (
-    <section className="panel panel--stats" aria-label="Estadísticas">
-      <h2 className="panel__title">Estadísticas</h2>
+    <section className="panel panel--stats" aria-label={t('stats.title')}>
+      <h2 className="panel__title">{t('stats.title')}</h2>
       <Hearts />
       <Resources />
       <ul className="stats">
@@ -155,8 +159,8 @@ export function StatsPanel() {
           return (
             <li key={row.key} className={`stat ${d ? (d.v > 0 ? 'stat--up' : 'stat--down') : ''}`}>
               <span className="stat__icon">{row.icon}</span>
-              <span className="stat__label">{row.label}</span>
-              <span className="stat__value mono">{stats ? fixed(stats[row.key], row.digits ?? 2) : '—'}</span>
+              <span className="stat__label">{t(row.label)}</span>
+              <span className="stat__value mono">{stats ? fixed(stats[row.key], 2) : '—'}</span>
               {d ? (
                 <span key={d.id} className={`stat__delta ${d.v > 0 ? 'up' : 'down'}`}>
                   {signed(d.v)}
@@ -167,13 +171,7 @@ export function StatsPanel() {
         })}
       </ul>
       <Transformations />
-      {stats ? (
-        <p className="footnote">
-          Valores reales del juego. Lágrimas = 30/(FireDelay+1) y alcance = TearRange/40, igual que el HUD.
-        </p>
-      ) : (
-        <p className="footnote">Las estadísticas aparecerán al empezar una partida.</p>
-      )}
+      <p className="footnote">{stats ? t('stats.note') : t('stats.empty')}</p>
     </section>
   );
 }

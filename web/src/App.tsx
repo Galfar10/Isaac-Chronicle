@@ -12,6 +12,7 @@ import { Welcome } from './components/Welcome';
 import { BagIcon, BookIcon, MapIcon, ScrollIcon, SparkIcon } from './components/Icons';
 import { gameStore, useClient, useGameEvents } from './lib/gameStore';
 import { LangContext, type Lang } from './lib/i18n';
+import { defaultLang, translate } from './lib/strings';
 
 type Tab = 'run' | 'inventory' | 'synergies' | 'history' | 'map';
 
@@ -56,7 +57,11 @@ function SvgDefs() {
 
 export function App() {
   const [monitor, setMonitor] = useState(() => new URLSearchParams(location.search).get('mode') === 'monitor');
-  const [lang, setLang] = useState<Lang>(() => readPref<Lang>('irtc.lang', 'es'));
+  // ?lang=en|es (shareable) > saved choice > browser language.
+  const [lang, setLang] = useState<Lang>(() => {
+    const q = new URLSearchParams(location.search).get('lang');
+    return q === 'en' || q === 'es' ? q : defaultLang(readPref<string>('irtc.lang', ''));
+  });
   const [tab, setTab] = useState<Tab>('run');
   const [modal, setModal] = useState<{ kind: ItemKind; id: number } | null>(null);
   const [pinnedKey, setPinnedKey] = useState<number | null>(null);
@@ -67,6 +72,9 @@ export function App() {
   useEffect(() => {
     document.documentElement.classList.toggle('monitor', monitor);
   }, [monitor]);
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
   useGameEvents((events) => {
     if (events.some((e) => e.event === 'room_changed' || e.event === 'run_started')) setPinnedKey(null);
   });
@@ -90,6 +98,11 @@ export function App() {
     setLang((l) => {
       const next = l === 'es' ? 'en' : 'es';
       writePref('irtc.lang', next);
+      const url = new URL(location.href);
+      if (url.searchParams.has('lang')) {
+        url.searchParams.set('lang', next);
+        history.replaceState(null, '', url);
+      }
       return next;
     });
 
@@ -119,19 +132,19 @@ export function App() {
             {tab === 'synergies' ? <SynergiesPanel /> : null}
             {tab === 'history' ? <HistoryPanel /> : null}
             {tab === 'map' ? <MapPanel /> : null}
-            <nav className="tabbar" aria-label="Secciones">
+            <nav className="tabbar">
               {(
                 [
-                  ['run', 'Run', <BookIcon key="i" size={22} />],
-                  ['inventory', 'Inventario', <BagIcon key="i" size={22} />],
-                  ['synergies', 'Sinergias', <SparkIcon key="i" size={22} />],
-                  ['history', 'Historial', <ScrollIcon key="i" size={22} />],
-                  ['map', 'Mapa', <MapIcon key="i" size={22} />],
+                  ['run', <BookIcon key="i" size={22} />],
+                  ['inventory', <BagIcon key="i" size={22} />],
+                  ['synergies', <SparkIcon key="i" size={22} />],
+                  ['history', <ScrollIcon key="i" size={22} />],
+                  ['map', <MapIcon key="i" size={22} />],
                 ] as const
-              ).map(([id, label, icon]) => (
+              ).map(([id, icon]) => (
                 <button key={id} className={tab === id ? 'on' : ''} onClick={() => setTab(id)} aria-current={tab === id}>
                   {icon}
-                  <span>{label}</span>
+                  <span>{translate(lang, `tab.${id}`)}</span>
                 </button>
               ))}
             </nav>

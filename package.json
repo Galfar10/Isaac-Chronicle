@@ -1,6 +1,6 @@
-{
+﻿{
   "name": "isaac-real-time-companion",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Isaac Chronicle: real-time web companion for The Binding of Isaac: Repentance / Repentance+ (Steam Workshop mod + local app)",
   "type": "module",
