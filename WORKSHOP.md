@@ -11,7 +11,7 @@ Steam tiene que estar abierto con la cuenta que publicará el mod.
 | Descripción corta (la que sube ModUploader) | `<description>` de `isaac-mod/metadata.xml` |
 | Descripción completa (BBCode, para pegar en la página) | [`workshop/description.bbcode.txt`](workshop/description.bbcode.txt) |
 | Imagen principal (portada) | [`workshop/preview.png`](workshop/preview.png) — 1024×1024, cuadrada |
-| Galería (capturas, se añaden en la web de Steam) | Castellano: `docs/screenshots/01-objeto-cercano.png`, `02-sinergias.png`, `03-desconocidos.png`, `04-descubrimiento.png`, `05-movil.png` · English: `06-synergies-en.png`, `07-unknown-en.png`, `08-mobile-en.png`, `09-discovery-en.png` |
+| Galería (capturas, se añaden en la web de Steam; **máx. 2 MB por imagen**) | [`workshop/gallery/`](workshop/gallery) — JPG de 135–425 KB. Castellano: `01-objeto-cercano.jpg`, `02-sinergias.jpg`, `03-desconocidos.jpg`, `04-descubrimiento.jpg`, `05-movil.jpg` · English: `06-synergies-en.jpg`, `07-unknown-en.jpg`, `08-mobile-en.jpg`, `09-discovery-en.jpg` (los PNG de `docs/screenshots/` pesan hasta 2,6 MB: son para GitHub) |
 | Idiomas | La web cambia entre castellano e inglés con el botón ES/EN (la descripción BBCode lo explica en ambos idiomas) |
 | Tags | `Lua`, `Tweaks` |
 | Visibilidad | `Public` (cámbiala a `Private` en `metadata.xml` si quieres probar antes) |
@@ -40,7 +40,7 @@ actualizaciones. **Guarda ese `metadata.xml` en el repositorio** (y pon la URL e
 5. Acepta el acuerdo del Workshop si Steam lo pide (primera publicación).
 6. En la página del mod en Steam:
    - **Editar descripción** → pega `workshop/description.bbcode.txt`.
-   - **Añadir/editar imágenes y vídeos** → sube las 5 capturas de `docs/screenshots/`.
+   - **Añadir/editar imágenes y vídeos** → sube las capturas de `workshop/gallery/` (JPG, menos de 2 MB cada una).
 7. Copia el `metadata.xml` (ya con `<id>`) al repositorio, pon la URL del Workshop en `protocol/src/project.ts` y haz commit.
 
 ## Actualizaciones
