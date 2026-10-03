@@ -46,10 +46,16 @@ async function main(): Promise<void> {
   const url = companion.server.url;
   console.info('');
   console.info('  +----------------------------------------------+');
-  console.info('  |   ISAAC CHRONICLE - Real-Time Companion 0.1  |');
+  console.info('  |   ISAAC CHRONICLE - Real-Time Companion 0.3  |');
   console.info('  +----------------------------------------------+');
   console.info(`   Web:   ${url}`);
   console.info(`   Modo segundo monitor: ${url}/?mode=monitor`);
+  const lan = companion.server.lanStatus();
+  console.info(
+    lan.enabled
+      ? `   Movil: activado (${lan.addresses.join(', ') || 'sin red local'}) - QR en la web, boton "Movil"`
+      : '   Movil: desactivado - activalo en la web con el boton "Movil"',
+  );
   console.info('   Deja esta ventana abierta mientras juegas. Ctrl+C para salir.');
   console.info('');
   if (config.openBrowser) openBrowser(url);

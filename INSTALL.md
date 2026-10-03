@@ -27,6 +27,10 @@ quieres que abra el navegador cada vez).
 - La web muestra **🟢 ISAAC CONECTADO** en cuanto empiezas o continúas una partida.
 - **Segundo monitor**: botón *2º monitor* o abre <http://127.0.0.1:47823/?mode=monitor> y pon el navegador en pantalla completa.
 - **Idioma de nombres**: botón *ES/EN* (los nombres en español salen de los archivos de tu juego).
+- **Móvil / tablet**: en la web del PC pulsa **📱 Móvil → Activar modo móvil** y escanea el QR con el móvil (conectado
+  a la misma red Wi-Fi que el PC). La primera vez Windows pregunta por el Firewall: permite **Redes privadas**. Guarda la
+  página en favoritos o en la pantalla de inicio; la opción queda recordada aunque reinicies. La copia de GitHub Pages no
+  sirve en el móvil (es HTTPS y no puede hablar con tu PC): usa siempre el QR.
 
 ## Imágenes de los objetos
 
@@ -46,6 +50,7 @@ Si no, usa los iconos de la wiki (necesita internet) o un dibujo de reserva.
 | `--reveal-distance 1.5` | distancia (en casillas) a la que se identifica un pedestal; por defecto 2 |
 | `--update-data` | descarga los datos más recientes de la wiki (sin actualizar el mod) |
 | `--origin=https://mi-web` | permitir una copia alojada de la web |
+| `--lan` / `--no-lan` | forzar el modo móvil activado / desactivado (si no, se usa lo último elegido en la web) |
 
 ## Solución de problemas
 

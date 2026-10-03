@@ -128,7 +128,13 @@ const LOCAL_HOST = /^(127\.0\.0\.1|localhost|\[::1\])$/;
 
 /** True when the page is served by a hosted copy (GitHub Pages) instead of the Companion itself. */
 export function isHostedPage(): boolean {
-  return !LOCAL_HOST.test(location.hostname);
+  // Mobile mode serves the page from the PC's LAN address over http: that is the Companion too.
+  return location.protocol === 'https:' || location.origin === PROJECT.pagesOrigin;
+}
+
+/** True on the PC that runs the Companion (the only place where mobile mode is managed). */
+export function isThisPc(): boolean {
+  return LOCAL_HOST.test(location.hostname) && !isHostedPage();
 }
 
 /**

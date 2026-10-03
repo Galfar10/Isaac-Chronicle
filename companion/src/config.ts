@@ -19,6 +19,8 @@ export interface CompanionConfig {
   updateData: boolean;
   /** Proximity reveal distance in tiles (default ITEM_REVEAL_DISTANCE). */
   revealDistance?: number;
+  /** Mobile mode forced on (--lan) or off (--no-lan); undefined = last choice made in the web UI. */
+  lan?: boolean;
 }
 
 function arg(argv: string[], name: string): string | undefined {
@@ -85,6 +87,7 @@ export function loadConfig(argv = process.argv.slice(2), env = process.env): Com
     openBrowser: !argv.includes('--no-open') && env.IRTC_NO_OPEN !== '1',
     processCheck: !argv.includes('--no-process-check'),
     updateData: argv.includes('--update-data'),
+    lan: argv.includes('--no-lan') ? false : argv.includes('--lan') ? true : undefined,
     revealDistance: (() => {
       const v = Number(arg(argv, 'reveal-distance') ?? env.IRTC_REVEAL_DISTANCE);
       return Number.isFinite(v) && v > 0 ? v : undefined;

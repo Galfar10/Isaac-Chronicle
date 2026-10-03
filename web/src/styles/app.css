@@ -793,6 +793,17 @@
   cursor: pointer;
 }
 
+/* ------------------------------------------------------------------ phone (mobile mode dialog) */
+.phone { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.phone__title { margin: 0; font-family: var(--font-title); font-weight: 400; }
+.phone__steps { margin: 0; padding-left: 1.3em; }
+.phone__qr { align-self: center; width: min(260px, 70vw); line-height: 0; border-radius: 6px; overflow: hidden; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5); }
+.phone__qr svg { width: 100%; height: auto; display: block; }
+.phone__url { margin: 0; font-size: 0.8rem; word-break: break-all; user-select: all; }
+.phone__warn { margin: 0; color: #a3301f; font-weight: 600; }
+.btn--primary { background: linear-gradient(180deg, #9a2020, #7d1717); border-color: #a82424; }
+.btn:disabled { opacity: 0.55; cursor: default; }
+
 /* ------------------------------------------------------------------ mobile popup */
 .spawn-popup {
   position: fixed;

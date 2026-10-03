@@ -15,8 +15,9 @@ import {
   type ServerMessage,
 } from '@irtc/protocol';
 import type { Repository } from './db/repository.js';
+import { LAN_COOKIE, isLoopback, isPrivateAddress, keyMatches, lanAddresses, readCookie } from './lan.js';
 
-export const APP_VERSION = '0.1.0';
+export const APP_VERSION = '0.3.0';
 
 export interface ServerOptions {
   repo: Repository;
@@ -32,6 +33,23 @@ export interface ServerOptions {
   /** Minimum interval between WebSocket broadcasts (coalescing). */
   broadcastIntervalMs?: number;
   logger?: Pick<Console, 'info' | 'warn' | 'error'>;
+  /** Mobile mode: access key required for every LAN request. Without it, mobile mode is unavailable. */
+  lanKey?: string | null;
+  /** Start with mobile mode on. */
+  lanEnabled?: boolean;
+  /** Called after mobile mode is switched from the web UI (to persist the choice). */
+  onLanChange?: (enabled: boolean) => void;
+  /** Overrides the detected LAN addresses (tests). */
+  lanAddresses?: () => string[];
+}
+
+export interface LanStatus {
+  available: boolean;
+  enabled: boolean;
+  /** Addresses actually listening. */
+  addresses: string[];
+  /** Ready-to-open links (with the access key). Only ever sent to the PC itself. */
+  urls: string[];
 }
 
 const MIME: Record<string, string> = {
@@ -90,6 +108,8 @@ export interface CompanionServer {
   /** Queues domain events; the state is read at flush time (coalesced). */
   publish(events: DomainEvent[]): void;
   clientCount(): number;
+  lanStatus(): LanStatus;
+  setLan(enabled: boolean): Promise<LanStatus>;
   close(): Promise<void>;
 }
 
@@ -99,10 +119,72 @@ export async function startServer(opts: ServerOptions): Promise<CompanionServer>
   const extraOrigins = opts.allowedOrigins ?? [];
   const staticRoot = opts.staticDir && existsSync(opts.staticDir) ? resolve(opts.staticDir) : null;
   const startedAt = Date.now();
+  const lanKey = opts.lanKey ?? null;
+  let lanEnabled = false;
+  const lanServers = new Map<string, Server>();
+  const remoteClients = new Set<WebSocket>();
+  let port = 0;
 
-  const cors = (req: IncomingMessage, res: ServerResponse): boolean => {
+  /** LAN pages only talk to the address they were loaded from. */
+  const sameHost = (req: IncomingMessage): boolean => {
     const origin = req.headers.origin;
-    if (!isOriginAllowed(origin, extraOrigins)) {
+    if (!origin) return true;
+    try {
+      return new URL(origin).host === req.headers.host;
+    } catch {
+      return false;
+    }
+  };
+
+  const lanAuthorized = (req: IncomingMessage): boolean =>
+    lanEnabled &&
+    lanKey !== null &&
+    isPrivateAddress(req.socket.remoteAddress) &&
+    keyMatches(readCookie(req.headers.cookie, LAN_COOKIE), lanKey) &&
+    sameHost(req);
+
+  /**
+   * 'local': request from this PC. 'lan': authorized phone/tablet. 'done': response already sent
+   * (denied, or the ?key= link was exchanged for a cookie).
+   */
+  const gate = (req: IncomingMessage, res: ServerResponse, url: URL): 'local' | 'lan' | 'done' => {
+    if (isLoopback(req.socket.remoteAddress)) return 'local';
+    if (lanAuthorized(req)) return 'lan';
+    if (lanEnabled && lanKey && isPrivateAddress(req.socket.remoteAddress) && req.method === 'GET' && keyMatches(url.searchParams.get('key'), lanKey)) {
+      url.searchParams.delete('key');
+      res.writeHead(302, {
+        'Set-Cookie': `${LAN_COOKIE}=${lanKey}; Path=/; Max-Age=31536000; HttpOnly; SameSite=Strict`,
+        Location: url.pathname + url.search,
+        'Cache-Control': 'no-store',
+        'Referrer-Policy': 'no-referrer',
+      });
+      res.end();
+      return 'done';
+    }
+    res.writeHead(403, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+    res.end(
+      '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+        '<title>Isaac Chronicle</title><body style="font-family:sans-serif;background:#120d0a;color:#e9dcbc;padding:24px;line-height:1.5">' +
+        '<h1>Isaac Chronicle</h1>' +
+        '<p>Acceso denegado. En el PC abre la web del Companion, pulsa <b>📱 Móvil</b> y escanea el código QR.</p>' +
+        '<p>Access denied. On the PC open the Companion web page, press <b>📱 Mobile</b> and scan the QR code.</p>',
+    );
+    return 'done';
+  };
+
+  const lanStatus = (): LanStatus => {
+    const addresses = [...lanServers.keys()];
+    return {
+      available: lanKey !== null,
+      enabled: lanEnabled,
+      addresses,
+      urls: lanEnabled && lanKey ? addresses.map((ip) => `http://${ip}:${port}/?key=${lanKey}`) : [],
+    };
+  };
+
+  const cors = (req: IncomingMessage, res: ServerResponse, via: 'local' | 'lan' = 'local'): boolean => {
+    const origin = req.headers.origin;
+    if (via === 'lan' ? !sameHost(req) : !isOriginAllowed(origin, extraOrigins)) {
       sendJson(res, 403, { error: 'origin not allowed' });
       return false;
     }
@@ -122,11 +204,14 @@ export async function startServer(opts: ServerOptions): Promise<CompanionServer>
     createReadStream(file).pipe(res);
   };
 
-  const handleApi = (req: IncomingMessage, res: ServerResponse, url: URL): void => {
+  const handleApi = (req: IncomingMessage, res: ServerResponse, url: URL, via: 'local' | 'lan'): void => {
     const parts = url.pathname.split('/').filter(Boolean).slice(1); // drop "api"
     const repo = opts.repo;
     const [a, b, c] = parts;
     switch (a) {
+      case 'lan':
+        // The access links are only shown on the PC itself.
+        return via === 'local' ? sendJson(res, 200, lanStatus()) : sendJson(res, 403, { error: 'forbidden' });
       case 'health':
         return sendJson(res, 200, {
           ok: true,
@@ -216,26 +301,64 @@ export async function startServer(opts: ServerOptions): Promise<CompanionServer>
     serveFile(res, file, immutable ? 'public, max-age=31536000, immutable' : 'no-cache');
   };
 
-  const http = createHttpServer((req, res) => {
+  /** POST /api/lan {"enabled": boolean}: only from a page served by this PC (not the hosted copy, not the LAN). */
+  const handleLanPost = (req: IncomingMessage, res: ServerResponse, via: 'local' | 'lan'): void => {
+    const origin = req.headers.origin;
+    let localOrigin = !origin;
+    try {
+      localOrigin ||= LOCAL_HOSTS.has(new URL(origin!).hostname);
+    } catch {
+      localOrigin = false;
+    }
+    if (via !== 'local' || !localOrigin || !String(req.headers['content-type'] ?? '').includes('application/json')) {
+      return sendJson(res, 403, { error: 'forbidden' });
+    }
+    let body = '';
+    req.setEncoding('utf8');
+    req.on('data', (chunk: string) => {
+      body += chunk;
+      if (body.length > 1024) req.destroy();
+    });
+    req.on('end', () => {
+      let enabled: unknown;
+      try {
+        enabled = (JSON.parse(body) as { enabled?: unknown }).enabled;
+      } catch {
+        enabled = undefined;
+      }
+      if (typeof enabled !== 'boolean') return sendJson(res, 400, { error: 'expected {"enabled": boolean}' });
+      if (enabled && !lanKey) return sendJson(res, 409, { error: 'mobile mode unavailable' });
+      void setLan(enabled).then((status) => {
+        opts.onLanChange?.(enabled as boolean);
+        sendJson(res, 200, status);
+      });
+    });
+  };
+
+  const onRequest = (req: IncomingMessage, res: ServerResponse): void => {
     try {
       const url = new URL(req.url ?? '/', 'http://localhost');
+      const via = gate(req, res, url);
+      if (via === 'done') return;
+      if (req.method === 'POST' && url.pathname === '/api/lan') return handleLanPost(req, res, via);
       if (req.method === 'OPTIONS') {
-        if (!cors(req, res)) return;
+        if (!cors(req, res, via)) return;
         res.writeHead(204, {
           'Access-Control-Allow-Methods': 'GET, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type',
           // Chrome Private Network Access preflight (hosted page -> 127.0.0.1).
           ...(req.headers['access-control-request-private-network'] ? { 'Access-Control-Allow-Private-Network': 'true' } : {}),
         });
-        return res.end();
+        res.end();
+        return;
       }
       if (req.method !== 'GET' && req.method !== 'HEAD') return sendJson(res, 405, { error: 'method not allowed' });
       if (url.pathname.startsWith('/api/') || url.pathname === '/api') {
-        if (!cors(req, res)) return;
-        return handleApi(req, res, url);
+        if (!cors(req, res, via)) return;
+        return handleApi(req, res, url, via);
       }
       if (url.pathname.startsWith('/gfx/')) {
-        if (!cors(req, res)) return;
+        if (!cors(req, res, via)) return;
         return handleGfx(res, url);
       }
       return handleStatic(res, url);
@@ -244,22 +367,69 @@ export async function startServer(opts: ServerOptions): Promise<CompanionServer>
       if (!res.headersSent) sendJson(res, 500, { error: 'internal error' });
       else res.end();
     }
-  });
+  };
+  const http = createHttpServer(onRequest);
 
   const wss = new WebSocketServer({
     noServer: true,
     maxPayload: 64 * 1024,
   });
 
-  http.on('upgrade', (req, socket, head) => {
+  const onUpgrade = (req: IncomingMessage, socket: import('node:stream').Duplex, head: Buffer) => {
     const url = new URL(req.url ?? '/', 'http://localhost');
-    if (url.pathname !== '/ws' || !isOriginAllowed(req.headers.origin, extraOrigins)) {
+    const local = isLoopback(req.socket.remoteAddress);
+    const allowed = local ? isOriginAllowed(req.headers.origin, extraOrigins) : lanAuthorized(req);
+    if (url.pathname !== '/ws' || !allowed) {
       socket.write('HTTP/1.1 403 Forbidden\r\n\r\n');
       socket.destroy();
       return;
     }
-    wss.handleUpgrade(req, socket, head, (ws) => wss.emit('connection', ws, req));
-  });
+    wss.handleUpgrade(req, socket, head, (ws) => {
+      if (!local) {
+        remoteClients.add(ws);
+        ws.on('close', () => remoteClients.delete(ws));
+      }
+      wss.emit('connection', ws, req);
+    });
+  };
+  http.on('upgrade', onUpgrade);
+
+  const closeServer = (s: Server) => {
+    s.close();
+    s.closeAllConnections?.();
+  };
+
+  /** Mobile mode on/off: extra listeners on the PC's private LAN addresses (same port). */
+  const setLan = async (on: boolean): Promise<LanStatus> => {
+    lanEnabled = on && lanKey !== null;
+    const wanted = new Set(lanEnabled ? (opts.lanAddresses ?? lanAddresses)() : []);
+    for (const [ip, s] of lanServers) {
+      if (wanted.has(ip)) continue;
+      lanServers.delete(ip);
+      closeServer(s);
+    }
+    if (!lanEnabled) for (const ws of remoteClients) ws.terminate();
+    for (const ip of wanted) {
+      if (lanServers.has(ip)) continue;
+      const s = createHttpServer(onRequest);
+      s.on('upgrade', onUpgrade);
+      try {
+        await new Promise<void>((ok, fail) => {
+          s.once('error', fail);
+          s.listen(port, ip, () => {
+            s.off('error', fail);
+            ok();
+          });
+        });
+        s.on('error', (err) => log.warn(`[server] mobile mode (${ip}):`, err.message));
+        lanServers.set(ip, s);
+        log.info(`[server] mobile mode: listening on http://${ip}:${port}`);
+      } catch (err) {
+        log.warn(`[server] mobile mode: cannot listen on ${ip}:${port}: ${(err as Error).message}`);
+      }
+    }
+    return lanStatus();
+  };
 
   let seq = 0;
   const send = (ws: WebSocket, msg: ServerMessage) => {
@@ -315,7 +485,8 @@ export async function startServer(opts: ServerOptions): Promise<CompanionServer>
     http.once('error', reject);
     http.listen(opts.port ?? 47823, host, () => resolveListen());
   });
-  const port = (http.address() as AddressInfo).port;
+  port = (http.address() as AddressInfo).port;
+  if (opts.lanEnabled) await setLan(true);
 
   return {
     http,
@@ -327,11 +498,15 @@ export async function startServer(opts: ServerOptions): Promise<CompanionServer>
       if (!timer) timer = setTimeout(flush, interval);
     },
     clientCount: () => wss.clients.size,
+    lanStatus,
+    setLan,
     close: () =>
       new Promise<void>((r) => {
         if (timer) clearTimeout(timer);
         for (const ws of wss.clients) ws.terminate();
         wss.close();
+        for (const s of lanServers.values()) closeServer(s);
+        lanServers.clear();
         http.close(() => r());
         http.closeAllConnections?.();
       }),

@@ -254,6 +254,12 @@ o editar `overrides.json`; al arrancar, si cambia la versión del dataset, se re
 ## 6. Seguridad y privacidad
 
 - El servidor escucha **solo en 127.0.0.1** (no accesible desde la red).
+- **Modo móvil** (opcional, desactivado por defecto, se activa desde la web del PC con `POST /api/lan`, que solo acepta
+  peticiones del propio PC con origen localhost y `Content-Type: application/json`): añade escuchas en las IPv4
+  **privadas** del PC (mismo puerto). Toda petición que no venga de loopback exige: dirección de origen privada
+  (RFC 1918 / link-local), la clave aleatoria de `dataDir/lan.json` (primero `?key=` del QR, que se cambia por una cookie
+  `HttpOnly; SameSite=Strict` y se quita de la URL) y `Origin` igual al host. `/api/lan` (los enlaces con clave) nunca se
+  sirve por la red. Al desactivarlo se cierran las escuchas y los WebSocket remotos.
 - API y WebSocket rechazan orígenes que no sean localhost (o los añadidos con `--origin=` / `IRTC_ALLOWED_ORIGINS`).
   Respuesta a *Private Network Access* de Chrome incluida para una web alojada que conecte a 127.0.0.1.
 - No se guarda nombre de usuario ni Steam ID. Cada run tiene un UUID aleatorio. Se guarda seed y personaje

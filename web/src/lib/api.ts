@@ -50,6 +50,31 @@ export function fetchTransformations(): Promise<{ id: number; name: string; name
   return getJson<{ id: number; name: string; nameEs: string | null }[]>('/api/transformations').catch(() => []);
 }
 
+export interface LanStatus {
+  available: boolean;
+  enabled: boolean;
+  addresses: string[];
+  urls: string[];
+}
+
+/** Mobile mode (only answered on the PC that runs the Companion). */
+export function fetchLan(): Promise<LanStatus | null> {
+  return getJson<LanStatus>('/api/lan').catch(() => null);
+}
+
+export async function setLan(enabled: boolean): Promise<LanStatus | null> {
+  try {
+    const res = await fetch(base + '/api/lan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ enabled }),
+    });
+    return res.ok ? ((await res.json()) as LanStatus) : null;
+  } catch {
+    return null;
+  }
+}
+
 export function assetUrl(path: string | null): string | null {
   if (!path) return null;
   return path.startsWith('/') ? base + path : path;

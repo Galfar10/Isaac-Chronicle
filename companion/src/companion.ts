@@ -4,6 +4,7 @@ import { migrate, openDatabase, readMigrations, type Db } from '../../backend/sr
 import { Repository } from '../../backend/src/db/repository.js';
 import { startServer, type CompanionServer } from '../../backend/src/server.js';
 import { ensureReferenceData } from './data.js';
+import { loadLanSettings, saveLanSettings } from './lan.js';
 import { RunPersistence } from './persist.js';
 import type { CompanionConfig } from './config.js';
 
@@ -64,6 +65,7 @@ export async function startCompanion(config: CompanionConfig, log: Log = console
     },
   });
 
+  const lan = loadLanSettings(config.dataDir);
   const server = await startServer({
     repo,
     getState: () => bridge.state,
@@ -73,6 +75,15 @@ export async function startCompanion(config: CompanionConfig, log: Log = console
     gfxDir: () => resourcesDir,
     allowedOrigins: config.allowedOrigins,
     logger: log,
+    lanKey: lan.key,
+    lanEnabled: config.lan ?? lan.enabled,
+    onLanChange: (enabled) => {
+      try {
+        saveLanSettings(config.dataDir, { ...lan, enabled });
+      } catch (err) {
+        log.warn('[lan] setting not saved:', (err as Error).message);
+      }
+    },
   });
 
   const persistence = new RunPersistence(repo);

@@ -1,6 +1,6 @@
 {
   "name": "isaac-real-time-companion",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Isaac Chronicle: real-time web companion for The Binding of Isaac: Repentance / Repentance+ (Steam Workshop mod + local app)",
   "type": "module",
@@ -40,6 +40,7 @@
     "@fontsource/alegreya": "^5.1.0",
     "@fontsource/im-fell-english-sc": "^5.1.0",
     "@types/node": "^22.10.0",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@types/ws": "^8.5.13",
@@ -47,6 +48,7 @@
     "esbuild": "^0.24.0",
     "fengari": "^0.1.4",
     "postject": "^1.0.0-alpha.6",
+    "qrcode": "^1.5.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tsx": "^4.19.2",

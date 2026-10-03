@@ -1,11 +1,13 @@
 import { DIFFICULTY_NAMES } from '@irtc/protocol';
 import { useEffect, useState } from 'react';
 import { fetchCharacters } from '../lib/api';
+import { isThisPc } from '../lib/connection';
 import { ago, clock, curseNames, floorName } from '../lib/format';
 import { useClient, useNow } from '../lib/gameStore';
 import { useLang, type Lang } from '../lib/i18n';
 import { useT } from '../lib/strings';
 import { ExpandIcon } from './Icons';
+import { MobileModal } from './MobileModal';
 
 function useCharacterNames() {
   const [names, setNames] = useState<Map<number, { name: string; nameEs: string | null }>>(new Map());
@@ -70,6 +72,7 @@ export function Header({ monitor, onToggleMonitor, onToggleLang }: HeaderProps) 
   const ch = run?.character.type !== null && run?.character.type !== undefined ? characters.get(run.character.type) : undefined;
   const charName = (lang === 'es' ? ch?.nameEs : ch?.name) ?? ch?.name ?? run?.character.name ?? '—';
   const curses = run?.floor ? curseNames(run.floor.curses) : [];
+  const [phoneOpen, setPhoneOpen] = useState(false);
   const status = run?.status === 'dead' ? t('run.dead') : run?.status === 'won' ? t('run.won') : run?.status === 'exited' ? t('run.exited') : null;
 
   return (
@@ -123,6 +126,11 @@ export function Header({ monitor, onToggleMonitor, onToggleLang }: HeaderProps) 
         <p className="header__empty">{t('run.none')}</p>
       )}
       <div className="header__tools">
+        {isThisPc() ? (
+          <button className="btn" onClick={() => setPhoneOpen(true)} title={t('btn.mobileTitle')}>
+            📱 {t('btn.mobile')}
+          </button>
+        ) : null}
         <button className="btn" onClick={onToggleLang} title={t('btn.langTitle')}>
           {lang === 'es' ? 'ES' : 'EN'}
         </button>
@@ -130,6 +138,7 @@ export function Header({ monitor, onToggleMonitor, onToggleLang }: HeaderProps) 
           <ExpandIcon size={18} /> {monitor ? t('btn.exit') : t('btn.monitor')}
         </button>
       </div>
+      <MobileModal open={phoneOpen} onClose={() => setPhoneOpen(false)} />
     </header>
   );
 }

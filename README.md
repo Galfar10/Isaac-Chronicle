@@ -54,6 +54,7 @@ de tu partida y una web los muestra al momento.
    ejecuta `IsaacCompanion.exe`. Déjalo abierto mientras juegas.
 3. Se abre <http://127.0.0.1:47823> (o usa <https://galfar10.github.io/Isaac-Chronicle/>).
 4. Juega: la web muestra 🟢 **ISAAC CONECTADO**.
+5. 📱 **En el móvil**: en la web del PC pulsa **Móvil → Activar modo móvil** y escanea el QR (misma red Wi-Fi).
 
 No necesitas Node.js, Python, Docker ni `--luadebug`. Más en [INSTALL.md](INSTALL.md).
 
@@ -87,6 +88,7 @@ page shows it instantly.
    `IsaacCompanion.exe`. Keep it open while you play.
 3. <http://127.0.0.1:47823> opens automatically (or use <https://galfar10.github.io/Isaac-Chronicle/>).
 4. Play: the page shows 🟢 **ISAAC CONNECTED**.
+5. 📱 **On your phone**: on the PC page press **Mobile → Turn on mobile mode** and scan the QR code (same Wi-Fi).
 
 No Node.js, Python, Docker or `--luadebug` needed. Windows may show "Windows protected your PC" because the executable is not
 signed: **More info → Run anyway**.
