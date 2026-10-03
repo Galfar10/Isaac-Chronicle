@@ -1,0 +1,10 @@
+node_modules/
+dist/
+web/dist/
+release/
+data/
+.shots/
+.claude/
+database/local/
+*.log
+.DS_Store

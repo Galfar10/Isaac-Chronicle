@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+    <name>Isaac Chronicle - Real-Time Companion</name>
+    <directory>isaac-real-time-companion</directory>
+    <description>Este mod conecta tu partida de Isaac con una interfaz web en tiempo real.
+This mod connects your Isaac run to a real-time web interface.
+
+Second monitor / phone: real stats, nearby items (only when you get close), inventory, known synergies, floor map and run history.
+The mod draws NOTHING in-game. It needs the free Isaac Chronicle Companion app:
+https://github.com/Galfar10/Isaac-Chronicle/releases/latest
+
+Web: https://galfar10.github.io/Isaac-Chronicle/ (or http://127.0.0.1:47823)
+No --luadebug needed. Works with or without REPENTOGON.</description>
+    <version>0.1.0</version>
+    <visibility>Public</visibility>
+    <tag id="Lua"/>
+    <tag id="Tweaks"/>
+</metadata>

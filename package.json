@@ -1,0 +1,57 @@
+{
+  "name": "isaac-real-time-companion",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Isaac Chronicle: real-time web companion for The Binding of Isaac: Repentance / Repentance+ (Steam Workshop mod + local app)",
+  "type": "module",
+  "license": "MIT",
+  "homepage": "https://galfar10.github.io/Isaac-Chronicle/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Galfar10/Isaac-Chronicle.git"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "tsx companion/src/main.ts",
+    "dev": "node scripts/dev.mjs",
+    "dev:server": "tsx watch companion/src/main.ts",
+    "dev:web": "vite --config web/vite.config.ts",
+    "mock": "tsx scripts/mock.ts",
+    "demo": "npm run build:web && tsx scripts/mock.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p web/tsconfig.json --noEmit && tsc -p tests/tsconfig.json --noEmit",
+    "build": "npm run typecheck && npm run build:web && npm run build:companion",
+    "build:web": "vite build --config web/vite.config.ts",
+    "build:companion": "node scripts/build-companion.mjs",
+    "package": "npm run build && node scripts/package-exe.mjs",
+    "import:game": "tsx database/import/import-game.ts",
+    "import:wiki": "tsx database/import/import-wiki.ts",
+    "db:build": "tsx database/import/build-db.ts",
+    "mod:install": "tsx scripts/install-mod-local.ts",
+    "mod:uninstall": "tsx scripts/install-mod-local.ts --uninstall",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@fontsource/alegreya": "^5.1.0",
+    "@fontsource/im-fell-english-sc": "^5.1.0",
+    "@types/node": "^22.10.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/ws": "^8.5.13",
+    "@vitejs/plugin-react": "^4.3.4",
+    "esbuild": "^0.24.0",
+    "fengari": "^0.1.4",
+    "postject": "^1.0.0-alpha.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3",
+    "vitest": "^2.1.8"
+  }
+}
