@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="workshop/banner.png" alt="Isaac Chronicle — Real-Time Companion" width="100%">
+  <img src="workshop/banner-2026.png" alt="Isaac Chronicle — Real-Time Companion" width="100%">
 </p>
 
 <p align="center">
