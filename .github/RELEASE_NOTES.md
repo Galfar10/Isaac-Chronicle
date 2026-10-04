@@ -1,6 +1,11 @@
 ## Isaac Chronicle — Companion (Windows)
 
-### Novedades · What's new (0.3.1)
+### Novedades · What's new (0.3.2)
+
+- ♥ El botón **Apoyar** abre una ventana con las dos opciones: **Ko-fi** y **GitHub Sponsors**. Opcional.
+- ♥ The **Support** button opens a dialog with both options: **Ko-fi** and **GitHub Sponsors**. Optional.
+
+### 0.3.1
 
 - ♥ Enlace **Apoyar** (Ko-fi) en la web del Companion y enlaces de Ko-fi / GitHub Sponsors en la guía de inicio. Opcional.
 - ♥ **Support** link (Ko-fi) in the Companion web page, plus Ko-fi / GitHub Sponsors links in the getting-started guide. Optional.
