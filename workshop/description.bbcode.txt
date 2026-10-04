@@ -25,7 +25,7 @@ La web funciona en [b]castellano e inglés[/b]: el botón [b]ES/EN[/b] (arriba a
 [h3]Cómo se usa[/h3]
 [olist]
 [*] Suscríbete a este mod.
-[*] Descarga la app gratuita [b]Isaac Chronicle Companion[/b]: [url=https://github.com/Galfar10/Isaac-Chronicle/releases/latest]IsaacCompanion-win-x64.zip[/url]. Es un único .exe: no instala nada más.
+[*] Descarga la app gratuita [b]Isaac Chronicle Companion[/b]: [url=https://github.com/Galfar10/Isaac-Chronicle/releases/latest]descargar[/url] (Windows, Steam Deck / Linux y macOS). Es un único programa: no instala nada más.
 [*] Ábrela y déjala abierta mientras juegas. Se abre [url=http://127.0.0.1:47823]http://127.0.0.1:47823[/url] (o usa [url=https://galfar10.github.io/Isaac-Chronicle/]la web[/url]).
 [*] Inicia Isaac y juega. La web mostrará [b]ISAAC CONECTADO[/b].
 [/olist]
@@ -68,7 +68,7 @@ The page works in [b]English and Spanish[/b]: the [b]ES/EN[/b] button (top right
 [h3]How to use[/h3]
 [olist]
 [*] Subscribe to this mod.
-[*] Download the free [b]Isaac Chronicle Companion[/b] app: [url=https://github.com/Galfar10/Isaac-Chronicle/releases/latest]IsaacCompanion-win-x64.zip[/url]. It is a single .exe: nothing else to install.
+[*] Download the free [b]Isaac Chronicle Companion[/b] app: [url=https://github.com/Galfar10/Isaac-Chronicle/releases/latest]download[/url] (Windows, Steam Deck / Linux and macOS). It is a single program: nothing else to install.
 [*] Run it and keep it open while you play. [url=http://127.0.0.1:47823]http://127.0.0.1:47823[/url] opens automatically (or use [url=https://galfar10.github.io/Isaac-Chronicle/]the website[/url]).
 [*] Start Isaac and play. The page will show [b]ISAAC CONNECTED[/b].
 [/olist]

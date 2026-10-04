@@ -31,7 +31,7 @@ export function Welcome() {
         <li className={step(companionOk)}>
           <strong>{t('welcome.step2')}</strong> (
           <a href={PROJECT.releasesUrl} target="_blank" rel="noreferrer">
-            IsaacCompanion-win-x64.zip
+            {t('welcome.download')}
           </a>
           ). {t('welcome.step2b')}
           {companionOk ? <span className="welcome__ok"> {t('welcome.detected')}</span> : null}

@@ -42,7 +42,7 @@ export function isPackaged(): boolean {
 
 /** Folder of the running code: the executable folder when packaged, the repo otherwise. */
 export function appRoot(): string {
-  // Single executable application: assets are shipped next to the .exe.
+  // Single executable application: assets are shipped next to the executable.
   if (isPackaged()) return dirname(process.execPath);
   const here = typeof __dirname !== 'undefined' ? __dirname : dirname(fileURLToPath(import.meta.url));
   // companion/src -> repo root, or dist/ -> repo root
@@ -60,7 +60,8 @@ function firstExisting(...paths: string[]): string | null {
 function defaultDataDir(root: string, packaged: boolean): string {
   if (!packaged) return join(root, 'data');
   if (platform() === 'win32') return join(process.env.LOCALAPPDATA ?? join(homedir(), 'AppData', 'Local'), 'IsaacCompanion');
-  return join(homedir(), '.local', 'share', 'isaac-companion');
+  if (platform() === 'darwin') return join(homedir(), 'Library', 'Application Support', 'IsaacCompanion');
+  return join(process.env.XDG_DATA_HOME || join(homedir(), '.local', 'share'), 'isaac-companion');
 }
 
 export function loadConfig(argv = process.argv.slice(2), env = process.env): CompanionConfig {

@@ -17,7 +17,7 @@ npm install
 | `npm test` | toda la batería de tests (Vitest) |
 | `npm run typecheck` | TypeScript estricto (node, web y tests) |
 | `npm run build` | typecheck + web + bundle del Companion |
-| `npm run package` | ejecutable único `release/IsaacCompanion/IsaacCompanion.exe` + zip |
+| `npm run package` | ejecutable único en `release/IsaacCompanion/` + archivo comprimido, para el sistema en el que se ejecuta (Windows, Linux / Steam Deck, macOS) |
 | `npm run import:wiki` | descarga la wiki → `database/seed/wiki.json` |
 | `npm run import:game` | lee tus `extracted_resources` → `database/local/game.json` (solo inspección, no se versiona) |
 | `npm run db:build` | construye `data/companion.sqlite` e imprime un resumen |

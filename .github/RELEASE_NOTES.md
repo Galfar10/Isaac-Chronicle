@@ -1,6 +1,14 @@
-## Isaac Chronicle — Companion (Windows)
+## Isaac Chronicle — Companion (Windows · Steam Deck / Linux · macOS)
 
-### Novedades · What's new (0.3.4)
+### Novedades · What's new (0.4.0): Steam Deck y macOS · Steam Deck and macOS
+
+- 🎮 **Steam Deck / Linux**: `IsaacCompanion-linux-x64.tar.gz`. Extráelo en tu carpeta personal y pon en los parámetros de lanzamiento de Isaac `"/home/deck/IsaacCompanion/steam-launch.sh" %command%`: la app arranca y se cierra con el juego. Encuentra el `log.txt` de Proton, también en la microSD.
+- 🍎 **macOS** (Isaac con CrossOver, Whisky o Wine): `IsaacCompanion-macos-arm64.zip` (Apple Silicon) / `IsaacCompanion-macos-x64.zip` (Intel). La primera vez: `xattr -dr com.apple.quarantine ~/Downloads/IsaacCompanion`.
+- 🎮 **Steam Deck / Linux**: `IsaacCompanion-linux-x64.tar.gz`. Extract it in your home folder and set Isaac's launch options to `"/home/deck/IsaacCompanion/steam-launch.sh" %command%`: the app starts and stops with the game. It finds Proton's `log.txt`, also on the microSD card.
+- 🍎 **macOS** (Isaac through CrossOver, Whisky or Wine): `IsaacCompanion-macos-arm64.zip` (Apple Silicon) / `IsaacCompanion-macos-x64.zip` (Intel). First run: `xattr -dr com.apple.quarantine ~/Downloads/IsaacCompanion`.
+- Guía paso a paso · Step by step: [INSTALL.md](https://github.com/Galfar10/Isaac-Chronicle/blob/main/INSTALL.md)
+
+### 0.3.4
 
 - ♥ La ventana **Apoyar** aparece en cuanto la web muestra *desconectado* (Isaac cerrado), sin espera.
 - ♥ The **Support** dialog appears as soon as the page shows *disconnected* (Isaac closed), with no delay.
@@ -29,7 +37,7 @@
 
 **ES**
 1. Suscríbete al mod [**Isaac Chronicle** en Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3812867579).
-2. Descarga `IsaacCompanion-win-x64.zip`, descomprímelo y ejecuta `IsaacCompanion.exe` (déjalo abierto mientras juegas).
+2. Descarga el archivo de tu sistema (Windows: `IsaacCompanion-win-x64.zip` → `IsaacCompanion.exe`), descomprímelo y ábrelo (déjalo abierto mientras juegas).
 3. Se abre <http://127.0.0.1:47823>. También puedes usar <https://galfar10.github.io/Isaac-Chronicle/>.
 4. Interfaz en castellano e inglés: botón **ES/EN**.
 5. Móvil: botón **📱 Móvil** en la web del PC y escanea el QR.
@@ -38,7 +46,7 @@
 
 **EN**
 1. Subscribe to [**Isaac Chronicle** on Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3812867579).
-2. Download `IsaacCompanion-win-x64.zip`, unzip it and run `IsaacCompanion.exe` (keep it open while you play).
+2. Download the file for your system (Windows: `IsaacCompanion-win-x64.zip` → `IsaacCompanion.exe`), unzip it and run it (keep it open while you play).
 3. <http://127.0.0.1:47823> opens automatically. You can also use <https://galfar10.github.io/Isaac-Chronicle/>.
 4. English and Spanish interface: **ES/EN** button.
 5. Phone: **📱 Mobile** button on the PC page, then scan the QR code.
