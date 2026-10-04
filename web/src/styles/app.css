@@ -804,6 +804,9 @@
 .btn--support { text-decoration: none; color: #f2c6b8; }
 .btn--support:hover { color: #ffd9cc; }
 .welcome__support { margin-top: 4px; }
+.support__options { display: flex; flex-wrap: wrap; gap: 10px; }
+.support__options .btn, .support__options .btn:hover { color: var(--parch-light); }
+.support__options .btn { text-decoration: none; font-size: 1.05rem; padding: 8px 16px; }
 .btn--primary { background: linear-gradient(180deg, #9a2020, #7d1717); border-color: #a82424; }
 .btn:disabled { opacity: 0.55; cursor: default; }
 
