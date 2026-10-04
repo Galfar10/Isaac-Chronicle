@@ -1,6 +1,11 @@
 ## Isaac Chronicle — Companion (Windows)
 
-### Novedades · What's new (0.3.0)
+### Novedades · What's new (0.3.1)
+
+- ♥ Enlace **Apoyar** (Ko-fi) en la web del Companion y enlaces de Ko-fi / GitHub Sponsors en la guía de inicio. Opcional.
+- ♥ **Support** link (Ko-fi) in the Companion web page, plus Ko-fi / GitHub Sponsors links in the getting-started guide. Optional.
+
+### 0.3.0
 
 - 📱 **Modo móvil**: en la web del PC pulsa **Móvil → Activar modo móvil** y escanea el QR con el móvil (misma red Wi-Fi).
   Desactivado por defecto, solo red local y con clave privada. La primera vez permite *Redes privadas* en el Firewall de Windows.

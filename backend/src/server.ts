@@ -17,7 +17,7 @@ import {
 import type { Repository } from './db/repository.js';
 import { LAN_COOKIE, isLoopback, isPrivateAddress, keyMatches, lanAddresses, readCookie } from './lan.js';
 
-export const APP_VERSION = '0.3.0';
+export const APP_VERSION = '0.3.1';
 
 export interface ServerOptions {
   repo: Repository;

@@ -41,7 +41,7 @@ describe('HTTP API', () => {
     expect(h.status).toBe(200);
     expect(h.body).toMatchObject({ ok: true, game: 'waiting', data: { items: 5, synergies: 2 } });
     const v = await get('/api/version');
-    expect(v.body).toMatchObject({ app: '0.3.0', wsProtocol: 1, wireProtocol: 1, dataVersion: 'test-1' });
+    expect(v.body).toMatchObject({ app: '0.3.1', wsProtocol: 1, wireProtocol: 1, dataVersion: 'test-1' });
   });
 
   it('GET /api/items/:id and /api/items/:kind/:id', async () => {
