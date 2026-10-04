@@ -9,6 +9,7 @@ import { useT } from '../lib/strings';
 import { ExpandIcon } from './Icons';
 import { MobileModal } from './MobileModal';
 import { SupportModal } from './SupportModal';
+import { useSupportPrompt } from '../lib/supportPrompt';
 
 function useCharacterNames() {
   const [names, setNames] = useState<Map<number, { name: string; nameEs: string | null }>>(new Map());
@@ -75,6 +76,7 @@ export function Header({ monitor, onToggleMonitor, onToggleLang }: HeaderProps) 
   const curses = run?.floor ? curseNames(run.floor.curses) : [];
   const [phoneOpen, setPhoneOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
+  useSupportPrompt(state.connection.game, () => setSupportOpen(true));
   const status = run?.status === 'dead' ? t('run.dead') : run?.status === 'won' ? t('run.won') : run?.status === 'exited' ? t('run.exited') : null;
 
   return (
