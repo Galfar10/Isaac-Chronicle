@@ -13,5 +13,8 @@ export const PROJECT = {
   releasesUrl: 'https://github.com/Galfar10/Isaac-Chronicle/releases/latest',
   /** Steam Workshop item (id written by ModUploader into isaac-mod/metadata.xml). */
   workshopUrl: 'https://steamcommunity.com/sharedfiles/filedetails/?id=3812867579' as string | null,
+  /** Optional support links (also in .github/FUNDING.yml). */
+  kofiUrl: 'https://ko-fi.com/isaacchronicle',
+  sponsorsUrl: 'https://github.com/sponsors/Galfar10',
   companionPort: 47823,
 } as const;

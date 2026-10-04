@@ -6,6 +6,7 @@
   <a href="https://galfar10.github.io/Isaac-Chronicle/"><b>🌐 Web</b></a> ·
   <a href="https://github.com/Galfar10/Isaac-Chronicle/releases/latest"><b>⬇️ Companion (Windows)</b></a> ·
   <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3812867579"><b>🎮 Steam Workshop</b></a> ·
+  <a href="https://ko-fi.com/isaacchronicle"><b>☕ Ko-fi</b></a> ·
   <a href="#español">Español</a> ·
   <a href="#english">English</a>
 </p>
@@ -132,6 +133,14 @@ protocol/    Shared types and protocol         backend/    REST API + WebSocket 
 companion/   Single executable                 web/        React + TypeScript + Vite (ES/EN)
 database/    Migrations, data, importers       tests/      Vitest (runs the Lua mod in a Lua 5.3 VM)
 ```
+
+## Apoyar el proyecto · Support
+
+ES: Isaac Chronicle es gratis y de código abierto. Si te resulta útil, puedes apoyarlo (opcional):
+EN: Isaac Chronicle is free and open source. If you find it useful, you can support it (optional):
+
+<a href="https://ko-fi.com/isaacchronicle"><img alt="Ko-fi" src="https://img.shields.io/badge/Ko--fi-isaacchronicle-ff5e5b?logo=ko-fi&logoColor=white"></a>
+<a href="https://github.com/sponsors/Galfar10"><img alt="GitHub Sponsors" src="https://img.shields.io/badge/GitHub%20Sponsors-Galfar10-ea4aaa?logo=githubsponsors&logoColor=white"></a>
 
 ## Privacidad · Privacy
 

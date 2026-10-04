@@ -801,6 +801,9 @@
 .phone__qr svg { width: 100%; height: auto; display: block; }
 .phone__url { margin: 0; font-size: 0.8rem; word-break: break-all; user-select: all; }
 .phone__warn { margin: 0; color: #a3301f; font-weight: 600; }
+.btn--support { text-decoration: none; color: #f2c6b8; }
+.btn--support:hover { color: #ffd9cc; }
+.welcome__support { margin-top: 4px; }
 .btn--primary { background: linear-gradient(180deg, #9a2020, #7d1717); border-color: #a82424; }
 .btn:disabled { opacity: 0.55; cursor: default; }
 

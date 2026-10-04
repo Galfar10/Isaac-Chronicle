@@ -90,5 +90,7 @@ Everything runs locally; your name and Steam ID are never stored. Repentance and
 
 [hr][/hr]
 
+Apoya el proyecto / Support the project (opcional / optional): [url=https://ko-fi.com/isaacchronicle]Ko-fi[/url] · [url=https://github.com/sponsors/Galfar10]GitHub Sponsors[/url]
+
 Código abierto / Open source: [url=https://github.com/Galfar10/Isaac-Chronicle]github.com/Galfar10/Isaac-Chronicle[/url]
 Textos de objetos y sinergias / Item and synergy texts: Binding of Isaac Wiki (bindingofisaacrebirth.wiki.gg), CC BY-SA 4.0.

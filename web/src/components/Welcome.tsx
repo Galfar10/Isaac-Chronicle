@@ -52,6 +52,16 @@ export function Welcome() {
           {t('welcome.code')}
         </a>
       </p>
+      <p className="welcome__support small">
+        {t('support.text')}{' '}
+        <a href={PROJECT.kofiUrl} target="_blank" rel="noreferrer">
+          ☕ Ko-fi
+        </a>{' '}
+        ·{' '}
+        <a href={PROJECT.sponsorsUrl} target="_blank" rel="noreferrer">
+          ♥ GitHub Sponsors
+        </a>
+      </p>
     </section>
   );
 }

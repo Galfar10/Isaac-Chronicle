@@ -1,4 +1,4 @@
-import { DIFFICULTY_NAMES } from '@irtc/protocol';
+import { DIFFICULTY_NAMES, PROJECT } from '@irtc/protocol';
 import { useEffect, useState } from 'react';
 import { fetchCharacters } from '../lib/api';
 import { isThisPc } from '../lib/connection';
@@ -131,6 +131,9 @@ export function Header({ monitor, onToggleMonitor, onToggleLang }: HeaderProps) 
             📱 {t('btn.mobile')}
           </button>
         ) : null}
+        <a className="btn btn--support" href={PROJECT.kofiUrl} target="_blank" rel="noreferrer" title={t('btn.supportTitle')}>
+          ♥ {t('btn.support')}
+        </a>
         <button className="btn" onClick={onToggleLang} title={t('btn.langTitle')}>
           {lang === 'es' ? 'ES' : 'EN'}
         </button>
