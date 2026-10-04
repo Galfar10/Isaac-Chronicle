@@ -12,7 +12,7 @@
  log.txt  (Documents/My Games/Binding of Isaac Repentance+/log.txt)
         │  lectura incremental (poll 100 ms)
         ▼
- ┌──────────────── ISAAC COMPANION (un solo .exe, 127.0.0.1) ────────────────┐
+ ┌──────────────── ISAAC COMPANION (un ejecutable, 127.0.0.1) ────────────────┐
  │ BRIDGE  bridge/src        LogTail → WireDecoder → GameStateStore          │
  │ BACKEND backend/src       API REST + WebSocket /ws + SQLite (node:sqlite) │
  │ WEB     web/dist          servida por el mismo proceso                    │
@@ -80,7 +80,7 @@ lo lee y sirve la web por WebSocket.
 | Evento “objeto añadido” (vanilla) | `QueuedItem` + comparación de inventario cada segundo (cubre objetos sin pedestal: D4, Eden...) |
 | Orden real de corazones negros/almas | `GetBlackHearts` es una máscara: se muestra el número de huecos negros, no el orden exacto |
 | Tiempo de juego exacto del HUD | Se usa `GetFrameCount()/30` (tiempo de juego, se detiene en pausa) |
-| Iniciar el Companion desde el mod | Imposible sin `--luadebug`. El usuario abre el Companion (o pone un acceso directo en `shell:startup` para que arranque con Windows, ver INSTALL.md) |
+| Iniciar el Companion desde el mod | Imposible sin `--luadebug`. El usuario abre el Companion (o pone un acceso directo en `shell:startup` para que arranque con Windows; en Steam Deck / Linux, `steam-launch.sh` en los parámetros de lanzamiento lo arranca y cierra con el juego, ver INSTALL.md) |
 | Coop: datos de jugadores 2-4 | V1 sigue al jugador 0 (Esaú/The Soul no se muestran por separado) |
 | Probabilidad de diablo/ángel/planetario | No hay API vanilla fiable: no se muestra (no se inventa) |
 

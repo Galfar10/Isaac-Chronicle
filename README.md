@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://galfar10.github.io/Isaac-Chronicle/"><b>🌐 Web</b></a> ·
-  <a href="https://github.com/Galfar10/Isaac-Chronicle/releases/latest"><b>⬇️ Companion (Windows)</b></a> ·
+  <a href="https://github.com/Galfar10/Isaac-Chronicle/releases/latest"><b>⬇️ Companion (Windows · Steam Deck · macOS)</b></a> ·
   <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3812867579"><b>🎮 Steam Workshop</b></a> ·
   <a href="https://ko-fi.com/isaacchronicle"><b>☕ Ko-fi</b></a> ·
   <a href="#español">Español</a> ·
@@ -51,13 +51,18 @@ de tu partida y una web los muestra al momento.
 ### Cómo empezar
 
 1. Suscríbete al mod [**Isaac Chronicle** en Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3812867579).
-2. Descarga [`IsaacCompanion-win-x64.zip`](https://github.com/Galfar10/Isaac-Chronicle/releases/latest), descomprímelo y
-   ejecuta `IsaacCompanion.exe`. Déjalo abierto mientras juegas.
+2. Descarga el [Companion](https://github.com/Galfar10/Isaac-Chronicle/releases/latest) para tu sistema, descomprímelo y
+   ábrelo. Déjalo abierto mientras juegas.
+   - **Windows**: `IsaacCompanion-win-x64.zip` → `IsaacCompanion.exe`.
+   - **Steam Deck / Linux**: `IsaacCompanion-linux-x64.tar.gz` → en los parámetros de lanzamiento de Isaac en Steam pon
+     `"/home/deck/IsaacCompanion/steam-launch.sh" %command%` y arrancará y se cerrará con el juego.
+   - **macOS** (Isaac con CrossOver, Whisky o Wine): `IsaacCompanion-macos-arm64.zip` (Apple Silicon) o
+     `IsaacCompanion-macos-x64.zip` (Intel) → `isaac-companion`.
 3. Se abre <http://127.0.0.1:47823> (o usa <https://galfar10.github.io/Isaac-Chronicle/>).
 4. Juega: la web muestra 🟢 **ISAAC CONECTADO**.
 5. 📱 **En el móvil**: en la web del PC pulsa **Móvil → Activar modo móvil** y escanea el QR (misma red Wi-Fi).
 
-No necesitas Node.js, Python, Docker ni `--luadebug`. Más en [INSTALL.md](INSTALL.md).
+No necesitas Node.js, Python, Docker ni `--luadebug`. Pasos para cada sistema en [INSTALL.md](INSTALL.md).
 
 ---
 
@@ -85,21 +90,26 @@ page shows it instantly.
 ### Getting started
 
 1. Subscribe to [**Isaac Chronicle** on Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3812867579).
-2. Download [`IsaacCompanion-win-x64.zip`](https://github.com/Galfar10/Isaac-Chronicle/releases/latest), unzip it and run
-   `IsaacCompanion.exe`. Keep it open while you play.
+2. Download the [Companion](https://github.com/Galfar10/Isaac-Chronicle/releases/latest) for your system, unzip it and
+   run it. Keep it open while you play.
+   - **Windows**: `IsaacCompanion-win-x64.zip` → `IsaacCompanion.exe`.
+   - **Steam Deck / Linux**: `IsaacCompanion-linux-x64.tar.gz` → set Isaac's Steam launch options to
+     `"/home/deck/IsaacCompanion/steam-launch.sh" %command%` and it starts and stops with the game.
+   - **macOS** (Isaac through CrossOver, Whisky or Wine): `IsaacCompanion-macos-arm64.zip` (Apple Silicon) or
+     `IsaacCompanion-macos-x64.zip` (Intel) → `isaac-companion`.
 3. <http://127.0.0.1:47823> opens automatically (or use <https://galfar10.github.io/Isaac-Chronicle/>).
 4. Play: the page shows 🟢 **ISAAC CONNECTED**.
 5. 📱 **On your phone**: on the PC page press **Mobile → Turn on mobile mode** and scan the QR code (same Wi-Fi).
 
 No Node.js, Python, Docker or `--luadebug` needed. Windows may show "Windows protected your PC" because the executable is not
-signed: **More info → Run anyway**.
+signed: **More info → Run anyway**. Steam Deck and macOS steps are in [INSTALL.md](INSTALL.md).
 
 ---
 
 ## Cómo funciona · How it works
 
 ```
-Isaac ──(Lua mod · Isaac.DebugString)──▶ log.txt ──▶ Isaac Companion (.exe · 127.0.0.1) ──WebSocket──▶ browser
+Isaac ──(Lua mod · Isaac.DebugString)──▶ log.txt ──▶ Isaac Companion (app · 127.0.0.1) ──WebSocket──▶ browser
 ```
 
 ES: Los mods de Isaac no pueden usar la red ni lanzar programas (salvo con `--luadebug`, inseguro); el mod escribe en el

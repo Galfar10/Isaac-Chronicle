@@ -10,7 +10,10 @@ function openBrowser(url: string): void {
   const cmd = platform() === 'win32' ? 'cmd' : platform() === 'darwin' ? 'open' : 'xdg-open';
   const args = platform() === 'win32' ? ['/c', 'start', '""', url] : [url];
   try {
-    spawn(cmd, args, { detached: true, stdio: 'ignore', windowsHide: true }).unref();
+    const child = spawn(cmd, args, { detached: true, stdio: 'ignore', windowsHide: true });
+    // No browser opener (e.g. Steam Deck in Game Mode): the URL is printed anyway.
+    child.on('error', () => {});
+    child.unref();
   } catch {
     /* the URL is printed anyway */
   }
@@ -56,6 +59,9 @@ async function main(): Promise<void> {
       ? `   Movil: activado (${lan.addresses.join(', ') || 'sin red local'}) - QR en la web, boton "Movil"`
       : '   Movil: desactivado - activalo en la web con el boton "Movil"',
   );
+  // The phone link carries the private key; it is only printed here, on this machine
+  // (useful on a Steam Deck in Game Mode, where the web page with the QR code is not on screen).
+  for (const u of lan.urls) console.info(`   Enlace para el movil: ${u}`);
   console.info('   Deja esta ventana abierta mientras juegas. Ctrl+C para salir.');
   console.info('');
   if (config.openBrowser) openBrowser(url);
