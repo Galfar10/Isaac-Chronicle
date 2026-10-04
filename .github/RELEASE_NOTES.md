@@ -1,6 +1,11 @@
 ## Isaac Chronicle — Companion (Windows)
 
-### Novedades · What's new (0.3.3)
+### Novedades · What's new (0.3.4)
+
+- ♥ La ventana **Apoyar** aparece en cuanto la web muestra *desconectado* (Isaac cerrado), sin espera.
+- ♥ The **Support** dialog appears as soon as the page shows *disconnected* (Isaac closed), with no delay.
+
+### 0.3.3
 
 - ♥ Al cerrar Isaac, la web muestra unos segundos después la ventana **Apoyar** (Ko-fi / GitHub Sponsors). No aparece al pausar, cambiar de ventana ni volver al menú.
 - ♥ When Isaac is closed, the web page shows the **Support** dialog (Ko-fi / GitHub Sponsors) a few seconds later. It does not appear when pausing, switching windows or going back to the menu.
