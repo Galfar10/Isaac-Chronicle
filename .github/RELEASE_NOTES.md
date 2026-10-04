@@ -1,6 +1,6 @@
 ## Isaac Chronicle — Companion (Windows · Steam Deck / Linux · macOS)
 
-### Steam Deck y macOS · Steam Deck and macOS
+### Novedades · What's new (0.4.0): Steam Deck y macOS · Steam Deck and macOS
 
 - 🎮 **Steam Deck / Linux**: `IsaacCompanion-linux-x64.tar.gz`. Extráelo en tu carpeta personal y pon en los parámetros de lanzamiento de Isaac `"/home/deck/IsaacCompanion/steam-launch.sh" %command%`: la app arranca y se cierra con el juego. Encuentra el `log.txt` de Proton, también en la microSD.
 - 🍎 **macOS** (Isaac con CrossOver, Whisky o Wine): `IsaacCompanion-macos-arm64.zip` (Apple Silicon) / `IsaacCompanion-macos-x64.zip` (Intel). La primera vez: `xattr -dr com.apple.quarantine ~/Downloads/IsaacCompanion`.
@@ -8,7 +8,7 @@
 - 🍎 **macOS** (Isaac through CrossOver, Whisky or Wine): `IsaacCompanion-macos-arm64.zip` (Apple Silicon) / `IsaacCompanion-macos-x64.zip` (Intel). First run: `xattr -dr com.apple.quarantine ~/Downloads/IsaacCompanion`.
 - Guía paso a paso · Step by step: [INSTALL.md](https://github.com/Galfar10/Isaac-Chronicle/blob/main/INSTALL.md)
 
-### Novedades · What's new (0.3.4)
+### 0.3.4
 
 - ♥ La ventana **Apoyar** aparece en cuanto la web muestra *desconectado* (Isaac cerrado), sin espera.
 - ♥ The **Support** dialog appears as soon as the page shows *disconnected* (Isaac closed), with no delay.

@@ -49,7 +49,7 @@ async function main(): Promise<void> {
   const url = companion.server.url;
   console.info('');
   console.info('  +----------------------------------------------+');
-  console.info('  |   ISAAC CHRONICLE - Real-Time Companion 0.3  |');
+  console.info('  |   ISAAC CHRONICLE - Real-Time Companion 0.4  |');
   console.info('  +----------------------------------------------+');
   console.info(`   Web:   ${url}`);
   console.info(`   Modo segundo monitor: ${url}/?mode=monitor`);
